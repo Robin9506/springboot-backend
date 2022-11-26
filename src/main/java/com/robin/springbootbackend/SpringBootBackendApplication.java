@@ -9,18 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @SpringBootApplication
-@RestController
 public class SpringBootBackendApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringBootBackendApplication.class, args);
-	}
-
-	@GetMapping("/")
-	public List<Product> hello(){
-		return List.of(
-				new Product("Mario Kart", 49.99, "Dit is Mario Kart")
-		);
 	}
 
 }
