@@ -21,7 +21,11 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public void addNewProduct(Product product) {
+    public Optional<Product> getProduct(Long productId){
+        return productRepository.findById(productId);
+    }
+
+    public void addProduct(Product product) {
         Optional<Product> productOptional = productRepository.findProductByName(product.getName());
         if (productOptional.isPresent()){
             throw new IllegalStateException("Product With Name: " + product.getName() + " already exists");
@@ -39,7 +43,7 @@ public class ProductService {
 
     @Transactional
     public void updateProduct(Long productId, String name, Double price, String description) {
-        Product product = productRepository.findProductById(productId).orElseThrow(() -> new IllegalStateException("product not found"));
+        Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalStateException("product not found"));
         System.out.println(name);
 
 

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "api/v1/product")
@@ -17,12 +18,17 @@ public class ProductController {
 
     @PostMapping
     public void postProduct(@RequestBody Product product){
-        productService.addNewProduct(product);
+        productService.addProduct(product);
     }
 
     @GetMapping
     public List<Product> getProducts(){
         return productService.getProducts();
+    }
+
+    @GetMapping(path = "{productId}")
+    public Optional<Product> getProduct(@PathVariable("productId") Long productId){
+        return productService.getProduct(productId);
     }
 
     @PutMapping(path = "{productId}")
