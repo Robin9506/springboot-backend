@@ -1,9 +1,11 @@
 package com.robin.springbootbackend.product;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -33,5 +35,26 @@ public class ProductService {
             throw new IllegalStateException("Product with ID: " + productId + " Does not exists");
         }
         productRepository.deleteById(productId);
+    }
+
+    @Transactional
+    public void updateProduct(Long productId, String name, Double price, String description) {
+        Product product = productRepository.findProductById(productId).orElseThrow(() -> new IllegalStateException("product not found"));
+        System.out.println(name);
+
+
+        if (name != null &&
+                name.length() > 0 &&
+                !Objects.equals(product.getName(), name)){
+            product.setName(name);
+        }
+
+        if (price != null &&
+                price > 0 &&
+                !Objects.equals(product.getPrice(), price)){
+            product.setPrice(price);
+        }
+
+        product.setDescription(description);
     }
 }
