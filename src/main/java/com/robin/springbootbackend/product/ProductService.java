@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ProductService {
@@ -21,17 +22,17 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public Optional<Product> getProduct(Long productId){
-        return productRepository.findById(productId);
+    public Optional<Product> getProduct(UUID productId){
+        return productRepository.findProductByID(productId);
     }
 
-    public void addProduct(Product product) {
-        Optional<Product> productOptional = productRepository.findProductByName(product.getName());
-        if (productOptional.isPresent()){
-            throw new IllegalStateException("Product With Name: " + product.getName() + " already exists");
-        }
-        productRepository.save(product);
-    }
+//    public void addProduct(Product product) {
+//        Optional<Product> productOptional = productRepository.findProductByName(product.getName());
+//        if (productOptional.isPresent()){
+//            throw new IllegalStateException("Product With Name: " + product.getName() + " already exists");
+//        }
+//        productRepository.save(product);
+//    }
 
     public void deleteProduct(Long productId) {
         boolean productExists = productRepository.existsById(productId);

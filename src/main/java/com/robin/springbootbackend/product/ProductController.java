@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "api/v1/product")
@@ -16,10 +17,10 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @PostMapping
-    public void postProduct(@RequestBody Product product){
-        productService.addProduct(product);
-    }
+//    @PostMapping
+//    public void postProduct(@RequestBody Product product){
+//        productService.addProduct(product);
+//    }
 
     @GetMapping
     public List<Product> getProducts(){
@@ -27,7 +28,7 @@ public class ProductController {
     }
 
     @GetMapping(path = "{productId}")
-    public Optional<Product> getProduct(@PathVariable("productId") Long productId){
+    public Optional<Product> getProduct(@PathVariable("productId") UUID productId){
         return productService.getProduct(productId);
     }
 

@@ -2,6 +2,8 @@ package com.robin.springbootbackend.product;
 
 import jakarta.persistence.*;
 
+import java.util.UUID;
+
 @Entity
 @Table
 public class Product {
@@ -15,8 +17,9 @@ public class Product {
             strategy = GenerationType.SEQUENCE,
             generator = "product_sequence"
     )
-    private Long id;
-    private String name;
+
+    private UUID product_id;
+    private String product_name;
     private double price;
     private String description;
 
@@ -24,25 +27,25 @@ public class Product {
     }
 
     public Product(String name, double price, String description) {
-        this.name = name;
+        this.product_name = name;
         this.price = price;
         this.description = description;
     }
 
-    public Long getId() {
-        return id;
+    public UUID getId() {
+        return product_id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(UUID id) {
+        this.product_id = id;
     }
 
     public String getName() {
-        return name;
+        return product_name;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.product_name = name;
     }
 
     public double getPrice() {
@@ -64,8 +67,8 @@ public class Product {
     @Override
     public String toString() {
         return "Product{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
+                "id=" + product_id +
+                ", name='" + product_name + '\'' +
                 ", price=" + price +
                 ", description='" + description + '\'' +
                 '}';
