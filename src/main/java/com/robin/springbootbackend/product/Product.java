@@ -1,5 +1,6 @@
 package com.robin.springbootbackend.product;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.util.UUID;
@@ -18,20 +19,42 @@ public class Product {
             generator = "product_sequence"
     )
 
+
     private UUID product_id;
+
     private String product_name;
     private double price;
     private String description;
 
+    private String company;
+
+    private String image_link;
+
+    private int rating;
+
+    private String platform;
+
     public Product() {
     }
 
-    public Product(String name, double price, String description) {
+    public Product(String name,
+                   double price,
+                   String description,
+                   String company,
+                   String imageLink,
+                   int rating,
+                   String platform) {
         this.product_name = name;
         this.price = price;
         this.description = description;
+        this.company = company;
+        this.image_link = imageLink;
+        this.rating = rating;
+        this.platform = platform;
     }
 
+
+    @JsonProperty(value = "product_id", index = 1)
     public UUID getId() {
         return product_id;
     }
@@ -40,6 +63,7 @@ public class Product {
         this.product_id = id;
     }
 
+    @JsonProperty(value = "product_name", index = 2)
     public String getName() {
         return product_name;
     }
@@ -64,13 +88,35 @@ public class Product {
         this.description = description;
     }
 
-    @Override
-    public String toString() {
-        return "Product{" +
-                "id=" + product_id +
-                ", name='" + product_name + '\'' +
-                ", price=" + price +
-                ", description='" + description + '\'' +
-                '}';
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getImage_link() {
+        return image_link;
+    }
+
+    public void setImage_link(String image_link) {
+        this.image_link = image_link;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
+    public String getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(String platform) {
+        this.platform = platform;
     }
 }
