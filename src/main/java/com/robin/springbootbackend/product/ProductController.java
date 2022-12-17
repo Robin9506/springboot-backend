@@ -33,7 +33,7 @@ public class ProductController {
     }
 
     @PutMapping(path = "{productId}")
-    public void updateProduct(@PathVariable("productId") Long productId,
+    public void updateProduct(@PathVariable("productId") UUID productId,
                               @RequestBody Product product){
         productService.updateProduct(
                 productId,
@@ -43,7 +43,7 @@ public class ProductController {
     }
 
     @DeleteMapping(path = "{productId}")
-    public void deleteProduct(@PathVariable("productId") Long productId){
+    public void deleteProduct(@PathVariable("productId") UUID productId){
         productService.deleteProduct(productId);
     }
 
