@@ -23,7 +23,7 @@ public class ProductService {
     }
 
     public Optional<Product> getProduct(UUID productId){
-        return productRepository.findProductByID(productId);
+        return productRepository.findById(productId);
     }
 
 //    public void addProduct(Product product) {
@@ -34,7 +34,7 @@ public class ProductService {
 //        productRepository.save(product);
 //    }
 
-    public void deleteProduct(Long productId) {
+    public void deleteProduct(UUID productId) {
         boolean productExists = productRepository.existsById(productId);
         if (!productExists){
             throw new IllegalStateException("Product with ID: " + productId + " Does not exists");
@@ -43,7 +43,7 @@ public class ProductService {
     }
 
     @Transactional
-    public void updateProduct(Long productId, String name, Double price, String description) {
+    public void updateProduct(UUID productId, String name, Double price, String description) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalStateException("product not found"));
         System.out.println(name);
 
