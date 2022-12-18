@@ -20,15 +20,15 @@ public class Product {
     )
 
 
-    private UUID product_id;
+    private UUID productId;
 
-    private String product_name;
+    private String productName;
     private double price;
     private String description;
 
     private String company;
 
-    private String image_link;
+    private String imageLink;
 
     private int rating;
 
@@ -44,11 +44,11 @@ public class Product {
                    String imageLink,
                    int rating,
                    String platform) {
-        this.product_name = name;
+        this.productName = name;
         this.price = price;
         this.description = description;
         this.company = company;
-        this.image_link = imageLink;
+        this.imageLink = imageLink;
         this.rating = rating;
         this.platform = platform;
     }
@@ -56,20 +56,20 @@ public class Product {
 
     @JsonProperty(value = "product_id", index = 1)
     public UUID getId() {
-        return product_id;
+        return productId;
     }
 
     public void setId(UUID id) {
-        this.product_id = id;
+        this.productId = id;
     }
 
     @JsonProperty(value = "product_name", index = 2)
     public String getName() {
-        return product_name;
+        return productName;
     }
 
     public void setName(String name) {
-        this.product_name = name;
+        this.productName = name;
     }
 
     public double getPrice() {
@@ -96,12 +96,12 @@ public class Product {
         this.company = company;
     }
 
-    public String getImage_link() {
-        return image_link;
+    public String getImageLink() {
+        return imageLink;
     }
 
-    public void setImage_link(String image_link) {
-        this.image_link = image_link;
+    public void setImageLink(String imageLink) {
+        this.imageLink = imageLink;
     }
 
     public int getRating() {
