@@ -1,5 +1,5 @@
 INSERT INTO product(product_name, price, description, company, image_link, rating, platform) VALUES ('Animal Crossing', 59.99, 'dieren steken over!', 'Nintendo', '', 5, 'Switch');
-INSERT INTO product(product_name, price, description, company, image_link, rating, platform) VALUES ('Mario Kart 8 Deluxe', 69.99, 'racen maar hoger!', 'Nintendo', '', 4, 'Switch');
+INSERT INTO product(product_name, price, description, company, image_link, rating, platform) VALUES ('Mario Kart 8 Deluxe', 69.99, 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, ', 'Nintendo', '../../../assets/marioKart8.jpg', 4, 'Switch');
 
 
 SELECT * FROM product;
@@ -7,34 +7,39 @@ SELECT * FROM product;
 DROP TABLE product;
 
 CREATE TABLE product(
-	product_id UUID DEFAULT gen_random_uuid (),
-	product_name VARCHAR(255),
-	price DECIMAL(4, 2),
-	description VARCHAR(255),
-	company VARCHAR(75),
-	image_link VARCHAR(255),
-	rating INT,
-	platform VARCHAR(255)
+	product_id UUID DEFAULT gen_random_uuid () NOT NULL,
+	product_name VARCHAR(255) NOT NULL,
+	price DECIMAL(4, 2) NOT NULL,
+	description VARCHAR(255) NOT NULL,
+	company VARCHAR(75) NOT NULL,
+	image_link VARCHAR(255) NOT NULL,
+	rating INT NOT NULL,
+	platform VARCHAR(255) NOT NULL
 	
 );
 
-INSERT INTO promo(promo_code, promo_discount, promo_end_time) VALUES ('2023', 10, '01-01-2024');
+INSERT INTO promo(promo_code, promo_discount, promo_end_time) VALUES ('2023', 10);
 
 CREATE TABLE promo(
 	promo_id UUID DEFAULT gen_random_uuid (),
 	promo_code VARCHAR(15),
 	promo_discount INT,
-	promo_end_time DATETIME
 	
 );
+
+drop table promo;
 
 DROP TABLE account;
 
 CREATE TABLE account(
-	account_id UUID DEFAULT gen_random_uuid (),
-	account_username VARCHAR(255),
-	account_password VARCHAR(255),
-	role(15)
+	account_id UUID DEFAULT gen_random_uuid () NOT NULL,
+	account_username VARCHAR(255) NOT NULL,
+	account_password VARCHAR(255) NOT NULL,
+	account_role VARCHAR(15) NOT NULL,
+	account_address VARCHAR(255) NOT NULL,
+	account_city VARCHAR(255) NOT NULL,
+	account_country VARCHAR(255) NOT NULL
+
 );
 
 INSERT INTO account(account_username, account_password, account_role) VALUES ('Robin', 555468, 'ADMIN');

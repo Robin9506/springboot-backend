@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RequestMapping(path = "api/v1/account")
 public class AccountController {
     private final AccountService accountService;
@@ -18,6 +19,10 @@ public class AccountController {
         this.accountService = accountService;
     }
 
+    @PostMapping
+    public Account postAccount(@RequestBody Account account) {
+        return accountService.postAccount(account);
+    }
     @GetMapping
     public List<Account> getAccounts(){
         return accountService.getAccounts();
