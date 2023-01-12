@@ -1,27 +1,28 @@
 package com.robin.springbootbackend.promo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-import java.util.Date;
 import java.util.UUID;
 
 @Entity
 @Table
 public class Promo {
     @Id
+    @Column(name = "promo_id")
     private UUID promo_id;
-    private String promo_code;
-    private int promo_discount;
-    private Date promo_end_time;
+    @Column(name = "promo_code")
+    private String promoCode;
+    @Column(name = "promo_discount")
+    private int promoDiscount;
 
     public Promo(){}
-    public Promo(String promoCode, int promoDiscount, Date promoEndTime){
-        this.promo_code = promoCode;
-        this.promo_discount = promoDiscount;
-        this.promo_end_time = promoEndTime;
+    public Promo(String promoCode, int promoDiscount){
+        this.promoCode = promoCode;
+        this.promoDiscount = promoDiscount;
     }
 
     @JsonProperty(value = "promo_id", index = 1)
@@ -33,28 +34,23 @@ public class Promo {
         this.promo_id = promo_id;
     }
 
-    @JsonProperty(value = "product_code", index = 2)
-    public String getPromo_code() {
-        return promo_code;
+    @JsonProperty(value = "promo_code", index = 2)
+    public String getPromoCode() {
+        return promoCode;
     }
 
-    public void setPromo_code(String promo_code) {
-        this.promo_code = promo_code;
+    @JsonProperty("_code")
+    public void setPromoCode(String promoCode) {
+        this.promoCode = promoCode;
     }
 
-    public int getPromo_discount() {
-        return promo_discount;
+    public int getPromoDiscount() {
+        return promoDiscount;
     }
 
-    public void setPromo_discount(int promo_discount) {
-        this.promo_discount = promo_discount;
+    @JsonProperty("_discount")
+    public void setPromoDiscount(int promoDiscount) {
+        this.promoDiscount = promoDiscount;
     }
 
-    public Date getPromo_end_time() {
-        return promo_end_time;
-    }
-
-    public void setPromo_end_time(Date promo_end_time) {
-        this.promo_end_time = promo_end_time;
-    }
 }

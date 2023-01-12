@@ -8,18 +8,10 @@ import java.util.UUID;
 @Entity
 @Table
 public class Product {
+
+
     @Id
-    @SequenceGenerator(
-            name= "product_sequence",
-            sequenceName = "product_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "product_sequence"
-    )
-
-
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID productId;
 
     private String productName;
@@ -54,68 +46,82 @@ public class Product {
     }
 
 
-    @JsonProperty(value = "product_id", index = 1)
+    @JsonProperty(value = "id", index = 1)
     public UUID getId() {
         return productId;
     }
 
+    @JsonProperty(value = "_id", index = 1)
     public void setId(UUID id) {
         this.productId = id;
     }
 
-    @JsonProperty(value = "product_name", index = 2)
+    @JsonProperty(value = "name", index = 2)
     public String getName() {
         return productName;
     }
 
+    @JsonProperty(value = "_name")
     public void setName(String name) {
         this.productName = name;
     }
 
+    @JsonProperty(value = "price")
     public double getPrice() {
         return price;
     }
 
+    @JsonProperty(value = "_price")
     public void setPrice(double price) {
         this.price = price;
     }
 
+    @JsonProperty(value = "description")
     public String getDescription() {
         return description;
     }
 
+    @JsonProperty(value = "_description")
     public void setDescription(String description) {
         this.description = description;
     }
 
+    @JsonProperty(value = "company")
     public String getCompany() {
         return company;
     }
 
+    @JsonProperty(value = "_company")
     public void setCompany(String company) {
         this.company = company;
     }
 
+    @JsonProperty(value = "imageLink")
     public String getImageLink() {
         return imageLink;
     }
 
+    @JsonProperty(value = "_imageLink")
     public void setImageLink(String imageLink) {
         this.imageLink = imageLink;
     }
 
+    @JsonProperty(value = "rating")
     public int getRating() {
         return rating;
     }
 
+    @JsonProperty(value = "_rating")
     public void setRating(int rating) {
         this.rating = rating;
     }
 
+    @JsonProperty(value = "platform")
     public String getPlatform() {
         return platform;
     }
 
+    @JsonProperty(value = "_platform")
     public void setPlatform(String platform) {
         this.platform = platform;
     }

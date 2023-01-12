@@ -1,5 +1,6 @@
 package com.robin.springbootbackend.account;
 
+import com.robin.springbootbackend.auth.Credentials;
 import com.robin.springbootbackend.product.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,11 +27,23 @@ public class AccountService {
         return accountRepository.findById(accountId);
     }
 
+    public Optional<Account> getAccountByCredentials(Credentials credentials){
+        return accountRepository.findByCredentials(credentials.getUsername(), credentials.getPassword());
+    }
+
     public void deleteAccount(UUID accountId) {
         boolean accountExists = accountRepository.existsById(accountId);
         if (!accountExists){
             throw new IllegalStateException("Account with ID: " + accountId + " Does not exists");
         }
         accountRepository.deleteById(accountId);
+    }
+
+    public Account postAccount(Account account) {
+//        boolean accountExists = accountRepository.existsById(accountId);
+//        if (!accountExists){
+//            throw new IllegalStateException("Account with ID: " + accountId + " Does not exists");
+//        }
+        return accountRepository.save(account);
     }
 }

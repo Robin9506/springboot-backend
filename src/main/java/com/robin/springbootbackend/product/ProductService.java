@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,6 +33,10 @@ public class ProductService {
 //        productRepository.save(product);
 //    }
 
+    public void postProduct(Product product){
+        productRepository.save(product);
+    }
+
     public void deleteProduct(UUID productId) {
         boolean productExists = productRepository.existsById(productId);
         if (!productExists){
@@ -43,23 +46,19 @@ public class ProductService {
     }
 
     @Transactional
-    public void updateProduct(UUID productId, String name, Double price, String description) {
-        Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalStateException("product not found"));
-        System.out.println(name);
+    public Product updateProduct(UUID productId, Product product) {
+        return productRepository.findById(productId)
+                .map(updatedProduct -> {
+                    updatedProduct.setName(product.getName());
+                    updatedProduct.setPrice(product.getPrice());
+                    updatedProduct.setDescription(product.getDescription());
+                    updatedProduct.setCompany(product.getCompany());
+                    updatedProduct.setImageLink(product.getImageLink());
+                    updatedProduct.setRating(product.getRating());
+                    updatedProduct.setPlatform(product.getPlatform());
+                    return productRepository.save(updatedProduct);
+                })
+                .orElseThrow(() -> new IllegalStateException("product not found"));
 
-
-        if (name != null &&
-                name.length() > 0 &&
-                !Objects.equals(product.getName(), name)){
-            product.setName(name);
-        }
-
-        if (price != null &&
-                price > 0 &&
-                !Objects.equals(product.getPrice(), price)){
-            product.setPrice(price);
-        }
-
-        product.setDescription(description);
     }
 }

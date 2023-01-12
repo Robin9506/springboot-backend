@@ -21,6 +21,10 @@ public class PromoService {
     public Optional<Promo> getPromo(UUID promoId){
         return promoRepository.findById(promoId);
     }
+    public int getPromoByCode(Promo promo){
+        Optional<Promo> promoObject = promoRepository.getPromoByCode(promo.getPromoCode());
+        return promoObject.orElseThrow().getPromoDiscount();
+    }
 
 
 }

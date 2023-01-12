@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RequestMapping(path = "api/v1/product")
 public class ProductController {
     private final ProductService productService;
@@ -17,10 +18,10 @@ public class ProductController {
         this.productService = productService;
     }
 
-//    @PostMapping
-//    public void postProduct(@RequestBody Product product){
-//        productService.addProduct(product);
-//    }
+    @PostMapping
+    public void postProduct(@RequestBody Product product){
+        productService.postProduct(product);
+    }
 
     @GetMapping
     public List<Product> getProducts(){
@@ -35,11 +36,7 @@ public class ProductController {
     @PutMapping(path = "{productId}")
     public void updateProduct(@PathVariable("productId") UUID productId,
                               @RequestBody Product product){
-        productService.updateProduct(
-                productId,
-                product.getName(),
-                product.getPrice(),
-                product.getDescription());
+        productService.updateProduct(productId, product);
     }
 
     @DeleteMapping(path = "{productId}")
