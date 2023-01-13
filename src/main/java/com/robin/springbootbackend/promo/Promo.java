@@ -1,10 +1,7 @@
 package com.robin.springbootbackend.promo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.UUID;
 
@@ -12,6 +9,7 @@ import java.util.UUID;
 @Table
 public class Promo {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "promo_id")
     private UUID promo_id;
     @Column(name = "promo_code")
@@ -25,7 +23,7 @@ public class Promo {
         this.promoDiscount = promoDiscount;
     }
 
-    @JsonProperty(value = "promo_id", index = 1)
+    @JsonProperty(value = "id", index = 1)
     public UUID getPromoId() {
         return promo_id;
     }
@@ -34,7 +32,7 @@ public class Promo {
         this.promo_id = promo_id;
     }
 
-    @JsonProperty(value = "promo_code", index = 2)
+    @JsonProperty(value = "code", index = 2)
     public String getPromoCode() {
         return promoCode;
     }
@@ -44,6 +42,7 @@ public class Promo {
         this.promoCode = promoCode;
     }
 
+    @JsonProperty("discount")
     public int getPromoDiscount() {
         return promoDiscount;
     }

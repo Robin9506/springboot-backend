@@ -1,5 +1,6 @@
 package com.robin.springbootbackend.promo;
 
+import com.robin.springbootbackend.product.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,5 +32,21 @@ public class PromoController {
     @PostMapping
     public int getPromoByCode(@RequestBody Promo promo){
         return promoService.getPromoByCode(promo);
+    }
+
+    @PostMapping("/new")
+    public Promo postPromo(@RequestBody Promo promo){
+        return promoService.postPromo(promo);
+    }
+
+    @PutMapping(path = "{promoId}")
+    public void updateProduct(@PathVariable("promoId") UUID promoId,
+                              @RequestBody Promo promo){
+        promoService.updatePromo(promoId, promo);
+    }
+
+    @DeleteMapping(path = "{promoId}")
+    public void deleteProduct(@PathVariable("promoId") UUID promoId){
+        promoService.deletePromo(promoId);
     }
 }

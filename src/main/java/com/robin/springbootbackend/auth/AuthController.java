@@ -1,5 +1,6 @@
 package com.robin.springbootbackend.auth;
 
+import com.nimbusds.jwt.JWT;
 import com.robin.springbootbackend.account.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class AuthController {
     }
 
     @PostMapping
-    public Optional<Account> loginAccount(@RequestBody Credentials credentials) {
+    public Token loginAccount(@RequestBody Credentials credentials) {
         return authService.loginAccount(credentials);
     }
 }

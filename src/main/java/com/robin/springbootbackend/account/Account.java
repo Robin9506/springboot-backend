@@ -53,7 +53,7 @@ public class Account {
         this.country = country;
     }
 
-    @JsonProperty(value = "account_id", index = 1)
+    @JsonProperty(value = "id", index = 1)
     public UUID getAccountId() {
         return accountId;
     }
