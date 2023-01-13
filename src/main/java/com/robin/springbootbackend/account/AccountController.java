@@ -38,4 +38,9 @@ public class AccountController {
         accountService.deleteAccount(accountId);
     }
 
+    @PutMapping(path = "{accountId}")
+    public void updateAccount(@PathVariable("accountId") UUID accountId,
+                              @RequestBody Account account){
+        accountService.updateAccount(accountId, account);
+    }
 }
