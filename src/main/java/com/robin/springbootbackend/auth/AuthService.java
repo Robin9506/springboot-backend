@@ -4,6 +4,7 @@ import com.nimbusds.jose.shaded.gson.Gson;
 import com.robin.springbootbackend.account.Account;
 import com.robin.springbootbackend.account.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -17,15 +18,15 @@ import java.util.Optional;
 @Service
 public class AuthService {
 
-    private final JwtEncoder jwtEncoder;
+    private final JwtService jwtService;
 
     private final AccountService accountService;
 
     @Autowired
-    public AuthService(AccountService accountService, JwtEncoder jwtEncoder){
+    public AuthService(AccountService accountService, JwtService jwtService){
 
         this.accountService = accountService;
-        this.jwtEncoder = jwtEncoder;
+        this.jwtService = jwtService;
     }
 
     public Token createToken(Account account){
@@ -34,11 +35,11 @@ public class AuthService {
                 .issuer("Triple R Games")
                 .issuedAt(now)
                 .expiresAt(now.plus(1, ChronoUnit.DAYS))
-                .subject(account.getUsername())
-                .claim("id", account.getAccountId())
+                .subject(account.getAccountId().toString())
+                .claim("role", account.getRole())
                 .build();
 
-        String token = this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+        String token = this.jwtService.encodeJWT(claims);
 
         Token tokenObject = new Token(token);
         return tokenObject;
@@ -53,5 +54,4 @@ public class AuthService {
         }
         return null;
     }
-
 }
