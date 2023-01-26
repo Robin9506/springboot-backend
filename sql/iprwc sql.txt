@@ -42,4 +42,4 @@ CREATE TABLE account(
 
 );
 
-INSERT INTO account(account_username, account_password, account_role) VALUES ('Robin', 555468, 'ADMIN');
+INSERT INTO account(account_username, account_password, account_role) VALUES ('Robin', 555468, 'ADMIN', "test straat 55", "Delft", "Nederland");

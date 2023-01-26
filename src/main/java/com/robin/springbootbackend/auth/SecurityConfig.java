@@ -4,6 +4,7 @@ import com.nimbusds.jose.jwk.*;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import com.robin.springbootbackend.account.AccountService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,6 +21,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
@@ -40,10 +42,12 @@ public class SecurityConfig{
         http = http.cors().and().csrf().disable();
 
         http = http
+                .addFilterBefore(new JwtAuthorizationFilter(new JwtService(this.jwtEncoder(), this.jwtDecoder())), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests()
+
                 .requestMatchers("/api/v1/product").permitAll()
                 .requestMatchers("/api/v1/account").permitAll()
-                .requestMatchers("/api/v1/promo").denyAll()
+                .requestMatchers("/api/v1/promo").permitAll()
                 .requestMatchers((HttpMethod.POST),"/api/v1/auth").permitAll()
                 .anyRequest().authenticated()
                 .and();
@@ -71,13 +75,6 @@ public class SecurityConfig{
         return new NimbusJwtEncoder(source);
     }
 
-    @Bean
-    AuthenticationManager authenticationManager(){
-        return new AuthenticationManager() {
-            @Override
-            public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-                return null;
-            }
-        };
-    }
+
+
 }
