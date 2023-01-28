@@ -1,6 +1,7 @@
 package com.robin.springbootbackend.product;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class ProductController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void postProduct(@RequestBody Product product){
         productService.postProduct(product);
     }
@@ -34,12 +36,14 @@ public class ProductController {
     }
 
     @PutMapping(path = "{productId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void updateProduct(@PathVariable("productId") UUID productId,
                               @RequestBody Product product){
         productService.updateProduct(productId, product);
     }
 
     @DeleteMapping(path = "{productId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void deleteProduct(@PathVariable("productId") UUID productId){
         productService.deleteProduct(productId);
     }
