@@ -2,6 +2,7 @@ package com.robin.springbootbackend.account;
 
 import com.robin.springbootbackend.product.Product;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class AccountController {
         return accountService.postAccount(account);
     }
     @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public List<Account> getAccounts(){
         return accountService.getAccounts();
     }
@@ -34,11 +36,13 @@ public class AccountController {
     }
 
     @DeleteMapping(path = "{accountId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void deleteAccount(@PathVariable("accountId") UUID accountId){
         accountService.deleteAccount(accountId);
     }
 
     @PutMapping(path = "{accountId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void updateAccount(@PathVariable("accountId") UUID accountId,
                               @RequestBody Account account){
         accountService.updateAccount(accountId, account);
