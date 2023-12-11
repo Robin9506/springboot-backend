@@ -49,6 +49,7 @@ public class SecurityConfig{
                 .authorizeHttpRequests()
 
                 .requestMatchers("/api/v1/product").permitAll()
+                .requestMatchers("/api/v1/product/{id}").permitAll()
                 .requestMatchers("/api/v1/account").permitAll()
                 .requestMatchers("/api/v1/promo").permitAll()
                 .requestMatchers((HttpMethod.POST),"/api/v1/auth").permitAll()
