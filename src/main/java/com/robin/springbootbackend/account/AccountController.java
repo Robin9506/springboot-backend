@@ -1,8 +1,9 @@
 package com.robin.springbootbackend.account;
 
-import com.robin.springbootbackend.product.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,6 +33,14 @@ public class AccountController {
 
     @GetMapping(path = "{accountId}")
     public Optional<Account> getAccount(@PathVariable("accountId") UUID accountId){
+        return accountService.getAccount(accountId);
+    }
+
+    @GetMapping(path = "/own")
+    public Optional<Account> getOwnAccount(Authentication authentication){
+        Jwt token = (Jwt) authentication.getPrincipal();
+        UUID accountId = UUID.fromString(token.getSubject());
+
         return accountService.getAccount(accountId);
     }
 

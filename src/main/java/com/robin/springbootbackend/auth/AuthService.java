@@ -3,6 +3,7 @@ package com.robin.springbootbackend.auth;
 import com.nimbusds.jose.shaded.gson.Gson;
 import com.robin.springbootbackend.account.Account;
 import com.robin.springbootbackend.account.AccountService;
+import com.robin.springbootbackend.enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -34,15 +35,14 @@ public class AuthService {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("Triple R Games")
                 .issuedAt(now)
-                .expiresAt(now.plus(1, ChronoUnit.DAYS))
+                .expiresAt(now.plus(15, ChronoUnit.MINUTES))
                 .subject(account.getAccountId().toString())
                 .claim("role", account.getRole())
                 .build();
 
         String token = this.jwtService.encodeJWT(claims);
 
-        Token tokenObject = new Token(token);
-        return tokenObject;
+        return new Token(token);
 
     }
 

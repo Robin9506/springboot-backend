@@ -23,7 +23,7 @@ public class AccountService {
     public List<Account> getAccounts(){
         List<Account> listOfAccounts = this.accountRepository.findAll();
         for(Account account : listOfAccounts){
-            account.setPassword("*".repeat(account.getPassword().length()));
+            account.setPassword(null);
         }
         return this.accountRepository.findAll();
     }
@@ -31,7 +31,7 @@ public class AccountService {
     public Optional<Account> getAccount(UUID accountId){
         return accountRepository.findById(accountId)
                 .map(receivedAccount -> {
-                    receivedAccount.setPassword("*".repeat(receivedAccount.getPassword().length()));
+                    receivedAccount.setPassword(null);
                     return receivedAccount;
                         }
 
@@ -56,7 +56,6 @@ public class AccountService {
                 .map(updatedAccount -> {
                     updatedAccount.setUsername(account.getUsername());
                     updatedAccount.setPassword(account.getPassword());
-                    updatedAccount.setRole(account.getRole());
                     updatedAccount.setAddress(account.getAddress());
                     updatedAccount.setCity(account.getCity());
                     updatedAccount.setCountry(account.getCountry());

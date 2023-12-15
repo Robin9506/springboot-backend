@@ -4,6 +4,7 @@ import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTParser;
 import com.robin.springbootbackend.account.AccountService;
 import com.robin.springbootbackend.enums.Role;
+import com.robin.springbootbackend.role.RoleService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,13 +50,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest req,
                                     HttpServletResponse res,
                                     FilterChain chain) throws IOException, ServletException {
-        Role userRole = Role.USER ;
-
         Collection<GrantedAuthority> authorities = new ArrayList<>();
-        //authorities.add(new SimpleGrantedAuthority(ROLE_PREFIX + userRole));
         String header = req.getHeader(HEADER_STRING);
-
-
 
         if (header == null || !header.startsWith(TOKEN_PREFIX)) {
             System.out.println("null header");
@@ -66,11 +62,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String token = header.replace("Bearer ", "");
         Jwt jwt = this.jwtService.decodeJWT(token);
 
-
-
         authorities.add(new SimpleGrantedAuthority(ROLE_PREFIX + jwt.getClaim("role")));
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(jwt,null, authorities);
+        Authentication authentication = new JwtAuthenticationToken(jwt,authorities);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         System.out.println(token);

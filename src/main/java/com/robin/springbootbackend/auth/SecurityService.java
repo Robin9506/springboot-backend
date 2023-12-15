@@ -1,2 +1,3 @@
-package com.robin.springbootbackend.auth;public class SecurityService {
+package com.robin.springbootbackend.auth;
+public class SecurityService {
 }
