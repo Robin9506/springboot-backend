@@ -37,7 +37,6 @@ public class AuthService {
                 .issuedAt(now)
                 .expiresAt(now.plus(15, ChronoUnit.MINUTES))
                 .subject(account.getAccountId().toString())
-                .claim("role", account.getRole())
                 .build();
 
         String token = this.jwtService.encodeJWT(claims);

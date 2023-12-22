@@ -4,6 +4,7 @@ import com.nimbusds.jose.jwk.*;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import com.robin.springbootbackend.account.AccountRepository;
 import com.robin.springbootbackend.account.AccountService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +19,9 @@ import org.springframework.security.config.annotation.web.configurers.oauth2.ser
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
@@ -28,6 +32,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
+import java.util.UUID;
 
 
 @Configuration
@@ -36,8 +41,11 @@ import java.text.ParseException;
 public class SecurityConfig{
     private final RsaKeyProperties rsaKeys;
 
-    public SecurityConfig(RsaKeyProperties rsaKeys){
+    private final UserRepository userRepository;
+
+    public SecurityConfig(RsaKeyProperties rsaKeys, UserRepository userRepository){
         this.rsaKeys = rsaKeys;
+        this.userRepository = userRepository;
     }
 
     @Bean
@@ -45,7 +53,7 @@ public class SecurityConfig{
         http = http.cors().and().csrf().disable();
 
         http = http
-                .addFilterBefore(new JwtAuthorizationFilter(new JwtService(this.jwtEncoder(), this.jwtDecoder())), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthorizationFilter(new JwtService(this.jwtEncoder(), this.jwtDecoder()), userDetailsService()), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests()
 
                 .requestMatchers("/api/v1/product").permitAll()
@@ -53,8 +61,7 @@ public class SecurityConfig{
                 .requestMatchers("/api/v1/account").permitAll()
                 .requestMatchers("/api/v1/promo").permitAll()
                 .requestMatchers((HttpMethod.POST),"/api/v1/auth").permitAll()
-                .anyRequest().authenticated()
-                .and();
+                .anyRequest().authenticated().and();
 
 
         http = http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
@@ -79,6 +86,9 @@ public class SecurityConfig{
         return new NimbusJwtEncoder(source);
     }
 
-
-
+    @Bean
+    public UserDetailsService userDetailsService(){
+        return username -> (UserDetails) userRepository.findById(UUID.fromString(username))
+                        .orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
+        }
 }

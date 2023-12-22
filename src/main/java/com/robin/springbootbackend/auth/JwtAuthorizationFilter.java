@@ -2,6 +2,7 @@ package com.robin.springbootbackend.auth;
 
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTParser;
+import com.robin.springbootbackend.account.Account;
 import com.robin.springbootbackend.account.AccountService;
 import com.robin.springbootbackend.enums.Role;
 import com.robin.springbootbackend.role.RoleService;
@@ -17,6 +18,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
@@ -27,9 +30,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
@@ -39,11 +41,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final String ROLE_PREFIX = "ROLE_";
 
+    private final UserDetailsService userDetailsService;
+
     private JwtService jwtService;
 
-    public JwtAuthorizationFilter(JwtService jwtService) {
+    public JwtAuthorizationFilter(JwtService jwtService, UserDetailsService userDetailsService) {
         this.jwtService = jwtService;
-
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -62,7 +66,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String token = header.replace("Bearer ", "");
         Jwt jwt = this.jwtService.decodeJWT(token);
 
-        authorities.add(new SimpleGrantedAuthority(ROLE_PREFIX + jwt.getClaim("role")));
+        User currentAccount = (User) this.userDetailsService.loadUserByUsername(jwt.getSubject());
+        String role = currentAccount.getAuthorities().stream().map(r -> r.getAuthority()).collect(Collectors.joining());
+
+        authorities.add(new SimpleGrantedAuthority(ROLE_PREFIX + role));
 
         Authentication authentication = new JwtAuthenticationToken(jwt,authorities);
         SecurityContextHolder.getContext().setAuthentication(authentication);
