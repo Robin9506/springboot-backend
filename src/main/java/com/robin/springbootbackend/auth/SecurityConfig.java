@@ -44,6 +44,7 @@ public class SecurityConfig{
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+        http = http.cors().and().csrf().disable();
         http = http
                 .addFilterBefore(new JwtAuthorizationFilter(new JwtService(this.jwtEncoder(), this.jwtDecoder()), userDetailsService()), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests()
@@ -53,6 +54,7 @@ public class SecurityConfig{
                 .requestMatchers("/api/v1/account").permitAll()
                 .requestMatchers("/api/v1/promo").permitAll()
                 .requestMatchers((HttpMethod.POST),"/api/v1/auth").permitAll()
+                .requestMatchers("/api/v1/cart").permitAll()
                 .anyRequest().authenticated().and();
 
 
