@@ -1,7 +1,7 @@
 package com.robin.springbootbackend.cart;
 
 import com.robin.springbootbackend.product.Product;
-import com.robin.springbootbackend.product.ProductRepository;
+import com.robin.springbootbackend.product.ProductService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,12 +13,12 @@ import java.util.UUID;
 public class CartService {
 
     private final CartRepository cartRepository;
-    private final ProductRepository productRepository;
+    private final ProductService productService;
 
     @Autowired
-    public CartService(CartRepository cartRepository, ProductRepository productRepository){
+    public CartService(CartRepository cartRepository, ProductService productService){
         this.cartRepository = cartRepository;
-        this.productRepository = productRepository;
+        this.productService = productService;
     }
 
     public Optional<Cart> getOwnCart(UUID accountId){
@@ -35,13 +35,22 @@ public class CartService {
     }
 
     public void createCart(UUID accountId){
-        cartRepository.createCartById(accountId);
+        Optional<Cart> cart = cartRepository.findCartByAccountId(accountId);
+        if (cart.isEmpty()) {
+            cartRepository.createCartById(accountId);
+        }
+
+    }
+
+    @Transactional
+    public void removeCart(UUID accountId){
+        cartRepository.removeCartByAccountId(accountId);
     }
 
     @Transactional
     public void removeItemFromCart(UUID accountId, UUID productId){
         System.out.println(productId);
-        Optional<Product> productOptional = productRepository.findById(productId);
+        Optional<Product> productOptional = productService.getProduct(productId);
         if (productOptional.isPresent()){
             Product product = productOptional.get();
 
@@ -57,7 +66,7 @@ public class CartService {
     @Transactional
     public void addItemToCart(UUID accountId, UUID productId){
         System.out.println(productId);
-        Optional<Product> productOptional = productRepository.findById(productId);
+        Optional<Product> productOptional = productService.getProduct(productId);
         if (productOptional.isPresent()){
             Product product = productOptional.get();
             Optional<Cart> cartOptional = getOwnCart(accountId);

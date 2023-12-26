@@ -44,5 +44,13 @@ public class CartController {
         cartService.removeItemFromCart(accountId, productId);
     }
 
+    @DeleteMapping(path = "/own")
+    public void removeCart(Authentication authentication){
+        Jwt token = (Jwt) authentication.getPrincipal();
+        UUID accountId = UUID.fromString(token.getSubject());
+
+        cartService.removeCart(accountId);
+    }
+
 
 }

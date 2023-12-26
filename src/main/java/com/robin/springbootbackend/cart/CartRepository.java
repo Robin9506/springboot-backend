@@ -1,6 +1,5 @@
 package com.robin.springbootbackend.cart;
 
-import com.robin.springbootbackend.account.Account;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -19,4 +18,7 @@ public interface CartRepository extends JpaRepository<Cart, UUID> {
     @Query(value = "INSERT INTO Cart (accountId) VALUES (?1)")
     public void createCartById(UUID AccountId);
 
+    @Modifying
+    @Query(value = "DELETE FROM Cart WHERE accountId = ?1")
+    public void removeCartByAccountId(UUID AccountId);
 }
