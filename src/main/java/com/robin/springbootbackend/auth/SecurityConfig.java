@@ -4,21 +4,15 @@ import com.nimbusds.jose.jwk.*;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import com.robin.springbootbackend.account.AccountRepository;
-import com.robin.springbootbackend.account.AccountService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -50,8 +44,6 @@ public class SecurityConfig{
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        http = http.cors().and().csrf().disable();
-
         http = http
                 .addFilterBefore(new JwtAuthorizationFilter(new JwtService(this.jwtEncoder(), this.jwtDecoder()), userDetailsService()), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests()
@@ -88,7 +80,7 @@ public class SecurityConfig{
 
     @Bean
     public UserDetailsService userDetailsService(){
-        return username -> (UserDetails) userRepository.findById(UUID.fromString(username))
+        return accountId -> (UserDetails) userRepository.findById(UUID.fromString(accountId))
                         .orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
         }
 }

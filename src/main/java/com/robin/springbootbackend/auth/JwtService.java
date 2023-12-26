@@ -23,6 +23,11 @@ public class JwtService {
     }
 
     public Jwt decodeJWT(String token){
-        return this.jwtDecoder.decode(token);
+        try{
+            return this.jwtDecoder.decode(token);
+        } catch (JwtException e) {
+            System.out.println("jwt is faulty");
+        }
+        return null;
     }
 }

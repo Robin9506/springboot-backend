@@ -1,5 +1,6 @@
 package com.robin.springbootbackend.account;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.robin.springbootbackend.enums.Role;
 import jakarta.persistence.*;
@@ -72,7 +73,8 @@ public class Account {
         this.username = username;
     }
 
-    @JsonProperty("password")
+
+    @JsonIgnore
     public String getPassword() {
         return password;
     }

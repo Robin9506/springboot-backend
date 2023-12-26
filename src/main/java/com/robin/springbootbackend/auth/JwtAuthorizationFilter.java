@@ -43,7 +43,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
 
-    private JwtService jwtService;
+    private final JwtService jwtService;
 
     public JwtAuthorizationFilter(JwtService jwtService, UserDetailsService userDetailsService) {
         this.jwtService = jwtService;
@@ -58,13 +58,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String header = req.getHeader(HEADER_STRING);
 
         if (header == null || !header.startsWith(TOKEN_PREFIX)) {
-            System.out.println("null header");
             chain.doFilter(req, res);
             return;
         }
 
         String token = header.replace("Bearer ", "");
         Jwt jwt = this.jwtService.decodeJWT(token);
+        if (jwt == null){ return; }
 
         User currentAccount = (User) this.userDetailsService.loadUserByUsername(jwt.getSubject());
         String role = currentAccount.getAuthorities().stream().map(r -> r.getAuthority()).collect(Collectors.joining());
@@ -73,9 +73,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         Authentication authentication = new JwtAuthenticationToken(jwt,authorities);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        System.out.println(token);
-        System.out.println(authentication);
         chain.doFilter(req, res);
     }
 }
