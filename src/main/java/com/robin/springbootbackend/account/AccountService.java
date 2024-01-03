@@ -61,10 +61,12 @@ public class AccountService {
 
     @Transactional
     public Account updateAccount(UUID accountId, Account account) {
+        String hash = hasher.hashPassword(account.getPassword());
+
         return accountRepository.findById(accountId)
                 .map(updatedAccount -> {
                     updatedAccount.setUsername(account.getUsername());
-                    updatedAccount.setPassword(account.getPassword());
+                    updatedAccount.setPassword(hash);
                     updatedAccount.setAddress(account.getAddress());
                     updatedAccount.setCity(account.getCity());
                     updatedAccount.setCountry(account.getCountry());
@@ -86,7 +88,6 @@ public class AccountService {
         } 
         
         String hash = hasher.hashPassword(account.getPassword());
-
         account.setPassword(hash);
         account.setRole(Role.USER);
         

@@ -56,4 +56,13 @@ public class AccountController {
                               @RequestBody Account account){
         accountService.updateAccount(accountId, account);
     }
+
+    @PutMapping
+    public void updateOwnAccount(Authentication authentication, 
+                                @RequestBody Account account){
+        Jwt token = (Jwt) authentication.getPrincipal();
+        UUID accountId = UUID.fromString(token.getSubject());
+
+        accountService.updateAccount(accountId, account);
+    }
 }
