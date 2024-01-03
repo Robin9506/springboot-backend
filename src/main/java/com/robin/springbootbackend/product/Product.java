@@ -20,7 +20,8 @@ public class Product {
 
     private String company;
 
-    private String imageLink;
+    @Column(name = "imageLink")
+    private String image;
 
     private int rating;
 
@@ -33,14 +34,14 @@ public class Product {
                    double price,
                    String description,
                    String company,
-                   String imageLink,
+                   String image,
                    int rating,
                    String platform) {
         this.productName = name;
         this.price = price;
         this.description = description;
         this.company = company;
-        this.imageLink = imageLink;
+        this.image = image;
         this.rating = rating;
         this.platform = platform;
     }
@@ -96,14 +97,14 @@ public class Product {
         this.company = company;
     }
 
-    @JsonProperty(value = "imageLink")
-    public String getImageLink() {
-        return imageLink;
+    @JsonProperty(value = "image")
+    public String getImage() {
+        return image;
     }
 
-    @JsonProperty(value = "_imageLink")
-    public void setImageLink(String imageLink) {
-        this.imageLink = imageLink;
+    @JsonProperty(value = "_image")
+    public void setImage(String image) {
+        this.image = image;
     }
 
     @JsonProperty(value = "rating")

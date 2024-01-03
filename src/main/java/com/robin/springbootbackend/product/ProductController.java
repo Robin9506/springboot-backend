@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,9 +21,9 @@ public class ProductController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public void postProduct(@RequestBody Product product){
-        productService.postProduct(product);
+    // @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public void postProduct(@RequestBody Product product) throws IOException{
+        productService.addProduct(product);
     }
 
     @GetMapping
