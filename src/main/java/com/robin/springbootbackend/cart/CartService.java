@@ -53,6 +53,8 @@ public class CartService {
         System.out.println(productId);
         Product product = productService.getProduct(productId);
 
+        if(product == null) return;
+
         Optional<Cart> cartOptional = getOwnCart(accountId);
         if (cartOptional.isPresent()){
             Cart cart = cartOptional.get();
@@ -66,6 +68,8 @@ public class CartService {
     public void addItemToCart(UUID accountId, UUID productId){
         System.out.println(productId);
         Product product = productService.getProduct(productId);
+
+        if(product == null) return;
 
         Optional<Cart> cartOptional = getOwnCart(accountId);
         if (cartOptional.isPresent()){
