@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -50,31 +51,27 @@ public class CartService {
     @Transactional
     public void removeItemFromCart(UUID accountId, UUID productId){
         System.out.println(productId);
-        Optional<Product> productOptional = productService.getProduct(productId);
-        if (productOptional.isPresent()){
-            Product product = productOptional.get();
+        Product product = productService.getProduct(productId);
 
-            Optional<Cart> cartOptional = getOwnCart(accountId);
-            if (cartOptional.isPresent()){
-                Cart cart = cartOptional.get();
-                System.out.println(product.getName());
-                cart.getProducts().remove(product);
-            }
+        Optional<Cart> cartOptional = getOwnCart(accountId);
+        if (cartOptional.isPresent()){
+            Cart cart = cartOptional.get();
+            System.out.println(product.getName());
+            cart.getProducts().remove(product);
         }
+        
     }
 
     @Transactional
     public void addItemToCart(UUID accountId, UUID productId){
         System.out.println(productId);
-        Optional<Product> productOptional = productService.getProduct(productId);
-        if (productOptional.isPresent()){
-            Product product = productOptional.get();
-            Optional<Cart> cartOptional = getOwnCart(accountId);
-            if (cartOptional.isPresent()){
-                Cart cart = cartOptional.get();
-                System.out.println(product.getName());
-                cart.getProducts().add(product);
-            }
-        }
+        Product product = productService.getProduct(productId);
+
+        Optional<Cart> cartOptional = getOwnCart(accountId);
+        if (cartOptional.isPresent()){
+            Cart cart = cartOptional.get();
+            System.out.println(product.getName());
+            cart.getProducts().add(product);
+        }      
     }
 }

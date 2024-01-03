@@ -14,36 +14,48 @@ import java.util.UUID;
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
+    private final FileHelper fileHelper;
 
     @Autowired
-    public ProductService(ProductRepository productRepository){
+    public ProductService(ProductRepository productRepository, FileHelper fileHelper){
         this.productRepository = productRepository;
+        this.fileHelper = fileHelper;
 
     }
     public List<Product> getProducts(){
         return productRepository.findAll();
     }
 
-    public Optional<Product> getProduct(UUID productId){
-        return productRepository.findById(productId);
+    public Product getProduct(UUID productId){
+        Optional<Product> productOptional = productRepository.findById(productId);
+        if (productOptional.isPresent()) {
+            Product product = productOptional.get();
+            String imageString = fileHelper.encodeFile(product.getImage());
+            
+            product.setImage(imageString);
+
+            return product;
+        }
+
+        return null;
     }
 
-   public void addProduct(Product product) throws IOException {
+   public void addProduct(Product product) {
        Optional<Product> productOptional = productRepository.findProductByName(product.getName());
        if (productOptional.isPresent()){
            throw new IllegalStateException("Product With Name: " + product.getName() + " already exists");
        }
 
        if(product.getImage() == null){ return;}
-       FileHelper fileHelper = new FileHelper();
-       String base64File = fileHelper.encodeFile("src/main/java/com/robin/springbootbackend/product/cat.jpeg");
-
-       byte[] bytes = fileHelper.decodeFile(base64File);
+       byte[] bytes = fileHelper.decodeFile(product.getImage());
        if(!fileHelper.checkFileHex(bytes)){
             return;
        }
 
-    //    productRepository.save(product);
+       String imageLink = fileHelper.convertBase64ToFile(bytes);
+
+       product.setImage(imageLink);
+       productRepository.save(product);
    }
 
     public void deleteProduct(UUID productId) {

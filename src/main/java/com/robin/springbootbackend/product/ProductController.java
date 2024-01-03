@@ -32,7 +32,7 @@ public class ProductController {
     }
 
     @GetMapping(path = "{productId}")
-    public Optional<Product> getProduct(@PathVariable("productId") UUID productId){
+    public Product getProduct(@PathVariable("productId") UUID productId){
         return productService.getProduct(productId);
     }
 

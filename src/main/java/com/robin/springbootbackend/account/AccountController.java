@@ -57,7 +57,7 @@ public class AccountController {
         accountService.updateAccount(accountId, account);
     }
 
-    @PutMapping
+    @PutMapping(path = "/own")
     public void updateOwnAccount(Authentication authentication, 
                                 @RequestBody Account account){
         Jwt token = (Jwt) authentication.getPrincipal();
