@@ -4,6 +4,8 @@ import com.nimbusds.jose.shaded.gson.Gson;
 import com.robin.springbootbackend.account.Account;
 import com.robin.springbootbackend.account.AccountService;
 import com.robin.springbootbackend.enums.Role;
+import com.robin.springbootbackend.helper.Hasher;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -23,11 +25,14 @@ public class AuthService {
 
     private final AccountService accountService;
 
+    private final Hasher hasher;
+
     @Autowired
-    public AuthService(AccountService accountService, JwtService jwtService){
+    public AuthService(AccountService accountService, JwtService jwtService, Hasher hasher){
 
         this.accountService = accountService;
         this.jwtService = jwtService;
+        this.hasher = hasher;
     }
 
     public Token createToken(Account account){
@@ -46,10 +51,17 @@ public class AuthService {
     }
 
     public Token loginAccount(Credentials credentials){
-        Optional<Account> accountOptional = this.accountService.getAccountByCredentials(credentials);
+        Optional<Account> accountOptional = this.accountService.getAccountByEmail(credentials.getUsername());
         if(accountOptional.isPresent()){
             Account account = accountOptional.get();
-            return createToken(account);
+
+            boolean passwordMatched = hasher.IsMatched(credentials.getPassword(), account.getPassword());
+            
+            if (passwordMatched) {
+                return createToken(account);
+                
+            }
+            else{ return null; }  
         }
         return null;
     }

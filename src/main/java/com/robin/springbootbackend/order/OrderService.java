@@ -22,8 +22,6 @@ public class OrderService {
     public OrderService(OrderRepository orderRepository, CartService cartService){
         this.orderRepository = orderRepository;
         this.cartService = cartService;
-
-
     }
 
     @Transactional
@@ -32,10 +30,14 @@ public class OrderService {
         if (cartOptional.isPresent()){
             Cart cart = cartOptional.get();
 
-            Order order = new Order(accountId);
-            order.setProducts(new ArrayList<Product>(cart.getProducts()));
+            if(cart.getProducts().size() > 0){
+                Order order = new Order(accountId);
+                order.setProducts(new ArrayList<Product>(cart.getProducts()));
 
-            this.orderRepository.save(order);
+                this.orderRepository.save(order);
+                this.cartService.removeCart(accountId);
+            }
+
         }
         else return;
 

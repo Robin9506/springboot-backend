@@ -1,8 +1,7 @@
-package com.robin.springbootbackend.product;
+package com.robin.springbootbackend.order;
 
+import com.robin.springbootbackend.cart.Cart;
 import com.robin.springbootbackend.cart.CartService;
-import com.robin.springbootbackend.order.Order;
-import com.robin.springbootbackend.order.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -17,12 +16,10 @@ import java.util.UUID;
 @RequestMapping(path = "api/v1/order")
 public class OrderController {
     private final OrderService orderService;
-    private final CartService cartService;
 
     @Autowired
-    public OrderController(OrderService orderService, CartService cartService){
+    public OrderController(OrderService orderService){
         this.orderService = orderService;
-        this.cartService = cartService;
     }
 
     @PostMapping
@@ -31,8 +28,8 @@ public class OrderController {
         UUID accountId = UUID.fromString(token.getSubject());
 
         orderService.postNewOrder(accountId);
-        this.cartService.removeCart(accountId);
     }
+
     @GetMapping
     public Optional<List<Order>> getOrders(){
         return orderService.getAllOrders();

@@ -1,9 +1,12 @@
 package com.robin.springbootbackend.account;
 
 import com.robin.springbootbackend.auth.Credentials;
+import com.robin.springbootbackend.enums.Role;
+import com.robin.springbootbackend.helper.Hasher;
 import com.robin.springbootbackend.product.Product;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,10 +17,12 @@ import java.util.UUID;
 public class AccountService {
 
     private final AccountRepository accountRepository;
+    private final Hasher hasher;
 
     @Autowired
-    public AccountService(AccountRepository accountRepository){
+    public AccountService(AccountRepository accountRepository, Hasher hasher){
         this.accountRepository = accountRepository;
+        this.hasher = hasher;
     }
 
     public List<Account> getAccounts(){
@@ -34,8 +39,11 @@ public class AccountService {
                     receivedAccount.setPassword(null);
                     return receivedAccount;
                         }
-
         );
+    }
+
+    public Optional<Account> getAccountByEmail(String email){
+        return accountRepository.findByEmail(email);
     }
 
     public Optional<Account> getAccountByCredentials(Credentials credentials){
@@ -66,10 +74,16 @@ public class AccountService {
     }
 
     public Account postAccount(Account account) {
-//        boolean accountExists = accountRepository.existsById(accountId);
-//        if (!accountExists){
-//            throw new IllegalStateException("Account with ID: " + accountId + " Does not exists");
-//        }
+        Optional<Account> accountExists = accountRepository.findByEmail(account.getUsername());
+        if (accountExists.isPresent()){
+            throw new IllegalStateException("Account with email: " + account.getUsername()+ " Does already exist");
+        }
+
+        String hash = hasher.hashPassword(account.getPassword());
+
+        account.setPassword(hash);
+        account.setRole(Role.USER);
+        
         return accountRepository.save(account);
     }
 }

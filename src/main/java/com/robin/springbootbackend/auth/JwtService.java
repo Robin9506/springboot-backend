@@ -1,6 +1,5 @@
 package com.robin.springbootbackend.auth;
 
-import com.robin.springbootbackend.account.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
