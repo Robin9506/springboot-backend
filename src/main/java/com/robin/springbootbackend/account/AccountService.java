@@ -3,6 +3,7 @@ package com.robin.springbootbackend.account;
 import com.robin.springbootbackend.auth.Credentials;
 import com.robin.springbootbackend.enums.Role;
 import com.robin.springbootbackend.helper.Hasher;
+import com.robin.springbootbackend.helper.PasswordChecker;
 import com.robin.springbootbackend.product.Product;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +80,11 @@ public class AccountService {
             throw new IllegalStateException("Account with email: " + account.getUsername()+ " Does already exist");
         }
 
+        PasswordChecker checker = new PasswordChecker();
+        if(!checker.isValid(account.getPassword())){
+            return null;
+        } 
+        
         String hash = hasher.hashPassword(account.getPassword());
 
         account.setPassword(hash);
