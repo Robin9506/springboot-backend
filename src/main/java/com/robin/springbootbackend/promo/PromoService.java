@@ -24,16 +24,21 @@ public class PromoService {
         this.logService = logService;
     }
 
-    public List<Promo> getPromos(){
-        return this.promoRepository.findAll();
+    public List<Optional<Promo>> getPromos(){
+        return this.promoRepository.getAllPromos();
     }
 
     public Optional<Promo> getPromo(UUID promoId){
-        return promoRepository.findById(promoId);
+        return promoRepository.getPromoById(promoId);
     }
 
     public Promo postPromo(Promo promo, UUID accountId, String ip){
-        Log log = new Log(ip, accountId, LogType.COMPLETED, RouteType.POST, Repo.PROMO, null, "user created new promo");
+        Optional<Promo> promoOptional = promoRepository.getPromoByCode(promo.getPromoCode());
+        if (promoOptional.isEmpty()) {
+            Log log = new Log(ip, accountId, LogType.COMPLETED, RouteType.POST, Repo.PROMO, null, "user tried to create promo with code: " + promo.getPromoCode());
+            this.logService.LogAction(log);
+        }
+        Log log = new Log(ip, accountId, LogType.COMPLETED, RouteType.POST, Repo.PROMO, null, "user created new promo with code: " + promo.getPromoCode());
         this.logService.LogAction(log);
 
         return promoRepository.save(promo);
@@ -41,7 +46,7 @@ public class PromoService {
 
     public Promo updatePromo(UUID promoId, Promo promo, UUID accountId, String ip) {
         Promo promoObject = null;
-        Optional<Promo> promoOptional = promoRepository.findById(promoId);
+        Optional<Promo> promoOptional = promoRepository.getPromoById(promoId);
         if (promoOptional.isPresent()) {
             promoObject = promoOptional.get();
             promoObject.setPromoCode(promo.getPromoCode());
@@ -61,8 +66,8 @@ public class PromoService {
     }
 
     public void deletePromo(UUID promoId, UUID accountId, String ip){
-        boolean promoExists = promoRepository.existsById(promoId);
-        if (!promoExists){
+        Optional<Promo> promoExists = promoRepository.getPromoById(promoId);
+        if (!promoExists.isPresent()){
             Log log = new Log(ip, accountId, LogType.DENIED, RouteType.DELETE, Repo.PROMO, null, "user tried to delete promo with id: " + promoId);
             this.logService.LogAction(log);
         }
@@ -70,7 +75,7 @@ public class PromoService {
         Log log = new Log(ip, accountId, LogType.COMPLETED, RouteType.DELETE, Repo.PROMO, null, "user deleted promo with id: " + promoId);
         this.logService.LogAction(log);
 
-        promoRepository.deleteById(promoId);
+        promoRepository.deletePromoFromId(promoId);
     }
     public int getPromoByCode(Promo promo){
         Optional<Promo> promoObject = promoRepository.getPromoByCode(promo.getPromoCode());

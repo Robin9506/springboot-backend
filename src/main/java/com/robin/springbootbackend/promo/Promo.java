@@ -11,7 +11,7 @@ public class Promo {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "promo_id")
-    private UUID promo_id;
+    private UUID promoId;
     @Column(name = "promo_code")
     private String promoCode;
     @Column(name = "promo_discount")
@@ -25,11 +25,11 @@ public class Promo {
 
     @JsonProperty(value = "id", index = 1)
     public UUID getPromoId() {
-        return promo_id;
+        return promoId;
     }
 
     public void setPromoId(UUID promo_id) {
-        this.promo_id = promo_id;
+        this.promoId = promo_id;
     }
 
     @JsonProperty(value = "code", index = 2)

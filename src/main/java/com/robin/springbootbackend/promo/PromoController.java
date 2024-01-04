@@ -28,7 +28,7 @@ public class PromoController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public List<Promo> getPromos(){
+    public List<Optional<Promo>> getPromos(){
         return promoService.getPromos();
     }
 
