@@ -24,12 +24,12 @@ public class AccountController {
     }
 
     @PostMapping
-    public Account postAccount(@RequestBody Account account, HttpServletRequest request) {
-        return accountService.postAccount(account, request.getRemoteAddr());
+    public void postAccount(@RequestBody Account account, HttpServletRequest request) {
+        accountService.postAccount(account, request.getRemoteAddr());
     }
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public List<Account> getAccounts(){
+    public List<Optional<Account>> getAccounts(){
         return accountService.getAccounts();
     }
 
