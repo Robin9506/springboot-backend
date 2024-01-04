@@ -32,19 +32,19 @@ public class PromoService {
         return promoRepository.getPromoById(promoId);
     }
 
-    public Promo postPromo(Promo promo, UUID accountId, String ip){
+    public void postPromo(Promo promo, UUID accountId, String ip){
         Optional<Promo> promoOptional = promoRepository.getPromoByCode(promo.getPromoCode());
-        if (promoOptional.isEmpty()) {
+        if (!promoOptional.isEmpty()) {
             Log log = new Log(ip, accountId, LogType.COMPLETED, RouteType.POST, Repo.PROMO, null, "user tried to create promo with code: " + promo.getPromoCode());
             this.logService.LogAction(log);
         }
         Log log = new Log(ip, accountId, LogType.COMPLETED, RouteType.POST, Repo.PROMO, null, "user created new promo with code: " + promo.getPromoCode());
         this.logService.LogAction(log);
 
-        return promoRepository.save(promo);
+        promoRepository.insertPromo(promo.getPromoCode(), promo.getPromoDiscount());
     }
 
-    public Promo updatePromo(UUID promoId, Promo promo, UUID accountId, String ip) {
+    public void updatePromo(UUID promoId, Promo promo, UUID accountId, String ip) {
         Promo promoObject = null;
         Optional<Promo> promoOptional = promoRepository.getPromoById(promoId);
         if (promoOptional.isPresent()) {
@@ -55,13 +55,13 @@ public class PromoService {
             Log log = new Log(ip, accountId, LogType.COMPLETED, RouteType.PUT, Repo.PROMO, null, "user updated promo with id: " + promoId);
             this.logService.LogAction(log);
 
-            return promoRepository.save(promoObject);
+            promoRepository.updatePromo(promoObject.getPromoCode(), promoObject.getPromoDiscount(), promoId);
 
         }
         else{
             Log log = new Log(ip, accountId, LogType.DENIED, RouteType.PUT, Repo.PROMO, null, "user tried to update promo with id: " + promoId);
             this.logService.LogAction(log);
-            return null;
+            return;
         }
     }
 

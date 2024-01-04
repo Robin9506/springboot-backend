@@ -26,4 +26,14 @@ public interface PromoRepository extends JpaRepository<Promo, UUID> {
     @Query(value = "DELETE FROM Promo WHERE promoId = ?1")
     public void deletePromoFromId(UUID promoId);
 
+    @Modifying
+    @Transactional
+    @Query(value = "INSERT INTO Promo (promoCode, promoDiscount) VALUES (?1, ?2)")
+    public void insertPromo(String promoCode, int promoDiscount);
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE Promo SET promoCode = ?1, promoDiscount = ?2 WHERE promoId = ?3")
+    public void updatePromo(String promoCode, int promoDiscount, UUID promoID);
+
 }

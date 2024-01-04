@@ -31,12 +31,12 @@ public class ProductService {
         this.fileHelper = fileHelper;
 
     }
-    public List<Product> getProducts(){
-        return productRepository.findAll();
+    public List<Optional<Product>> getProducts(){
+        return productRepository.findAllProducts();
     }
 
     public Product getProduct(UUID productId){
-        Optional<Product> productOptional = productRepository.findById(productId);
+        Optional<Product> productOptional = productRepository.findProductById(productId);
         if (productOptional.isPresent()) {
             Product product = productOptional.get();
             String imageString = fileHelper.encodeFile(product.getImage());
@@ -75,8 +75,8 @@ public class ProductService {
    }
 
     public void deleteProduct(UUID productId, UUID accountId, String ip) {
-        boolean productExists = productRepository.existsById(productId);
-        if (!productExists){
+        Optional<Product> productOptional = productRepository.findProductById(productId);
+        if (!productOptional.isPresent()){
             Log log = new Log(ip, accountId, LogType.DENIED, RouteType.POST, Repo.PRODUCT, null, "user tried to delete product with id: " + productId);
             this.logService.LogAction(log);
             throw new IllegalStateException("Product with ID: " + productId + " Does not exists");
@@ -84,14 +84,14 @@ public class ProductService {
 
         Log log = new Log(ip, accountId, LogType.COMPLETED, RouteType.POST, Repo.PRODUCT, null, "user deleted product with id: " + productId);
         this.logService.LogAction(log);
-        productRepository.deleteById(productId);
+        productRepository.deleteProductById(productId);
     }
 
     @Transactional
     public Product updateProduct(UUID productId, Product product, UUID accountId, String ip) {
         Product currentProduct = null;
 
-        Optional<Product> productOptional = productRepository.findById(productId);
+        Optional<Product> productOptional = productRepository.findProductById(productId);
         if (productOptional.isPresent()){
             currentProduct = productOptional.get();
             currentProduct.setName(product.getName());
