@@ -4,6 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -21,9 +25,12 @@ public class ProductController {
     }
 
     @PostMapping
-    // @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public void postProduct(@RequestBody Product product) throws IOException{
-        productService.addProduct(product);
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public void postProduct(@RequestBody Product product, Authentication authentication, HttpServletRequest request) throws IOException{
+        Jwt token = (Jwt) authentication.getPrincipal();
+        UUID accountId = UUID.fromString(token.getSubject());
+
+        productService.addProduct(product, accountId, request.getRemoteAddr());
     }
 
     @GetMapping
@@ -39,14 +46,20 @@ public class ProductController {
     @PutMapping(path = "{productId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void updateProduct(@PathVariable("productId") UUID productId,
-                              @RequestBody Product product){
-        productService.updateProduct(productId, product);
+                              @RequestBody Product product, Authentication authentication, HttpServletRequest request){
+        Jwt token = (Jwt) authentication.getPrincipal();
+        UUID accountId = UUID.fromString(token.getSubject());
+
+        productService.updateProduct(productId, product, accountId, request.getRemoteAddr());
     }
 
     @DeleteMapping(path = "{productId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public void deleteProduct(@PathVariable("productId") UUID productId){
-        productService.deleteProduct(productId);
+    public void deleteProduct(@PathVariable("productId") UUID productId, Authentication authentication, HttpServletRequest request){
+        Jwt token = (Jwt) authentication.getPrincipal();
+        UUID accountId = UUID.fromString(token.getSubject());
+
+        productService.deleteProduct(productId, accountId, request.getRemoteAddr());
     }
 
 }
