@@ -60,15 +60,19 @@ public class AuthService {
             boolean passwordMatched = hasher.IsMatched(credentials.getPassword(), account.getPassword());
             
             if (passwordMatched) {
+                Log log = new Log(ip, null, LogType.COMPLETED, RouteType.AUTH, Repo.AUTH, null, "user logged in with username: " + credentials.getUsername());
+                this.logService.LogAction(log);
                 return createToken(account);
                 
             }
             else{
-                Log log = new Log(ip, null, LogType.AUTH, RouteType.POST, Repo.AUTH, null, "user tried to login with username: " + credentials.getUsername());
+                Log log = new Log(ip, null, LogType.DENIED, RouteType.AUTH, Repo.AUTH, null, "user tried to login with username: " + credentials.getUsername());
                 this.logService.LogAction(log);
                 return null; 
             }  
         }
+        Log log = new Log(ip, null, LogType.DENIED, RouteType.AUTH, Repo.AUTH, null, "user tried to login with username: " + credentials.getUsername());
+        this.logService.LogAction(log);
         return null;
     }
 }

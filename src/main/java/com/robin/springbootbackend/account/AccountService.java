@@ -59,12 +59,12 @@ public class AccountService {
     public void deleteAccount(UUID accountId, UUID userId, String ip) {
         boolean accountExists = accountRepository.existsById(accountId);
         if (!accountExists){
-            Log log = new Log(ip, userId, LogType.DELETE, RouteType.DELETE, Repo.ACCOUNT, null, "user tried to delete account with id: " + accountId);
+            Log log = new Log(ip, userId, LogType.DENIED, RouteType.DELETE, Repo.ACCOUNT, null, "user tried to delete account with id: " + accountId);
             this.logService.LogAction(log);
             throw new IllegalStateException("Account with ID: " + accountId + " Does not exists");
         }
 
-        Log log = new Log(ip, userId, LogType.DELETE, RouteType.DELETE, Repo.ACCOUNT, null, "user deleted account with id: " + accountId);
+        Log log = new Log(ip, userId, LogType.COMPLETED, RouteType.DELETE, Repo.ACCOUNT, null, "user deleted account with id: " + accountId);
         this.logService.LogAction(log);
 
         accountRepository.deleteById(accountId);
@@ -84,13 +84,13 @@ public class AccountService {
             currentAccount.setCity(account.getCity());
             currentAccount.setCountry(account.getCountry());
 
-            Log log = new Log(ip, userId, LogType.UPDATE, RouteType.PUT, Repo.ACCOUNT, null, "user " + userId +" updated account with id: " + accountId);
+            Log log = new Log(ip, userId, LogType.COMPLETED, RouteType.PUT, Repo.ACCOUNT, null, "user " + userId +" updated account with id: " + accountId);
             this.logService.LogAction(log);
 
             return accountRepository.save(currentAccount);
         }
         else{
-            Log log = new Log(ip, userId, LogType.UPDATE, RouteType.PUT, Repo.ACCOUNT, null, "user " + userId +" tried to update account with id: " + accountId);
+            Log log = new Log(ip, userId, LogType.DENIED, RouteType.PUT, Repo.ACCOUNT, null, "user " + userId +" tried to update account with id: " + accountId);
             this.logService.LogAction(log);
         }
 
@@ -113,7 +113,7 @@ public class AccountService {
         account.setPassword(hash);
         account.setRole(Role.USER);
 
-        Log log = new Log(ip, null, LogType.CREATE, RouteType.POST, Repo.ACCOUNT, null, "user created account with email: " + account.getUsername());
+        Log log = new Log(ip, null, LogType.COMPLETED, RouteType.POST, Repo.ACCOUNT, null, "user created account with email: " + account.getUsername());
         this.logService.LogAction(log);
         
         return accountRepository.save(account);
