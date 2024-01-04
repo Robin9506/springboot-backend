@@ -1,13 +1,16 @@
 package com.robin.springbootbackend.account;
 
 import com.robin.springbootbackend.auth.Credentials;
+import com.robin.springbootbackend.enums.LogType;
+import com.robin.springbootbackend.enums.Repo;
 import com.robin.springbootbackend.enums.Role;
+import com.robin.springbootbackend.enums.RouteType;
 import com.robin.springbootbackend.helper.Hasher;
+import com.robin.springbootbackend.helper.Log;
+import com.robin.springbootbackend.helper.LogService;
 import com.robin.springbootbackend.helper.PasswordChecker;
-import com.robin.springbootbackend.product.Product;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,11 +21,13 @@ import java.util.UUID;
 public class AccountService {
 
     private final AccountRepository accountRepository;
+    private final LogService logService;
     private final Hasher hasher;
 
     @Autowired
-    public AccountService(AccountRepository accountRepository, Hasher hasher){
+    public AccountService(AccountRepository accountRepository, LogService logService, Hasher hasher){
         this.accountRepository = accountRepository;
+        this.logService = logService;
         this.hasher = hasher;
     }
 
@@ -51,35 +56,52 @@ public class AccountService {
         return accountRepository.findByCredentials(credentials.getUsername(), credentials.getPassword());
     }
 
-    public void deleteAccount(UUID accountId) {
+    public void deleteAccount(UUID accountId, UUID userId, String ip) {
         boolean accountExists = accountRepository.existsById(accountId);
         if (!accountExists){
+            Log log = new Log(ip, userId, LogType.DELETE, RouteType.DELETE, Repo.ACCOUNT, null, "user tried to delete account with id: " + accountId);
+            this.logService.LogAction(log);
             throw new IllegalStateException("Account with ID: " + accountId + " Does not exists");
         }
+
+        Log log = new Log(ip, userId, LogType.DELETE, RouteType.DELETE, Repo.ACCOUNT, null, "user deleted account with id: " + accountId);
+        this.logService.LogAction(log);
+
         accountRepository.deleteById(accountId);
     }
 
     @Transactional
-    public Account updateAccount(UUID accountId, Account account) {
+    public Account updateAccount(UUID accountId, Account account, UUID userId, String ip) {
         String hash = hasher.hashPassword(account.getPassword());
+        Account currentAccount = null;
 
-        return accountRepository.findById(accountId)
-                .map(updatedAccount -> {
-                    updatedAccount.setUsername(account.getUsername());
-                    updatedAccount.setPassword(hash);
-                    updatedAccount.setAddress(account.getAddress());
-                    updatedAccount.setCity(account.getCity());
-                    updatedAccount.setCountry(account.getCountry());
-                    return accountRepository.save(updatedAccount);
-                })
-                .orElseThrow(() -> new IllegalStateException("account not found"));
+        Optional<Account> updatedAccount = accountRepository.findById(accountId);
+        if(updatedAccount.isPresent()){
+            currentAccount = updatedAccount.get();
+            currentAccount.setUsername(account.getUsername());
+            currentAccount.setPassword(hash);
+            currentAccount.setAddress(account.getAddress());
+            currentAccount.setCity(account.getCity());
+            currentAccount.setCountry(account.getCountry());
+
+            Log log = new Log(ip, userId, LogType.UPDATE, RouteType.PUT, Repo.ACCOUNT, null, "user " + userId +" updated account with id: " + accountId);
+            this.logService.LogAction(log);
+
+            return accountRepository.save(currentAccount);
+        }
+        else{
+            Log log = new Log(ip, userId, LogType.UPDATE, RouteType.PUT, Repo.ACCOUNT, null, "user " + userId +" tried to update account with id: " + accountId);
+            this.logService.LogAction(log);
+        }
+
+        return currentAccount;
 
     }
 
-    public Account postAccount(Account account) {
+    public Account postAccount(Account account, String ip) {
         Optional<Account> accountExists = accountRepository.findByEmail(account.getUsername());
         if (accountExists.isPresent()){
-            throw new IllegalStateException("Account with email: " + account.getUsername()+ " Does already exist");
+            throw new IllegalStateException("Account not created");
         }
 
         PasswordChecker checker = new PasswordChecker();
@@ -90,6 +112,9 @@ public class AccountService {
         String hash = hasher.hashPassword(account.getPassword());
         account.setPassword(hash);
         account.setRole(Role.USER);
+
+        Log log = new Log(ip, null, LogType.CREATE, RouteType.POST, Repo.ACCOUNT, null, "user created account with email: " + account.getUsername());
+        this.logService.LogAction(log);
         
         return accountRepository.save(account);
     }

@@ -6,6 +6,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,8 +24,8 @@ public class AccountController {
     }
 
     @PostMapping
-    public Account postAccount(@RequestBody Account account) {
-        return accountService.postAccount(account);
+    public Account postAccount(@RequestBody Account account, HttpServletRequest request) {
+        return accountService.postAccount(account, request.getRemoteAddr());
     }
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -46,23 +48,29 @@ public class AccountController {
 
     @DeleteMapping(path = "{accountId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public void deleteAccount(@PathVariable("accountId") UUID accountId){
-        accountService.deleteAccount(accountId);
+    public void deleteAccount(@PathVariable("accountId") UUID accountId, Authentication authentication, HttpServletRequest request){
+        Jwt token = (Jwt) authentication.getPrincipal();
+        UUID userId = UUID.fromString(token.getSubject());
+        
+        accountService.deleteAccount(accountId, userId, request.getRemoteAddr());
     }
 
     @PutMapping(path = "{accountId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void updateAccount(@PathVariable("accountId") UUID accountId,
-                              @RequestBody Account account){
-        accountService.updateAccount(accountId, account);
+                              @RequestBody Account account, Authentication authentication, HttpServletRequest request){
+        Jwt token = (Jwt) authentication.getPrincipal();
+        UUID userId = UUID.fromString(token.getSubject());
+        
+        accountService.updateAccount(accountId, account, userId, request.getRemoteAddr());
     }
 
     @PutMapping(path = "/own")
     public void updateOwnAccount(Authentication authentication, 
-                                @RequestBody Account account){
+                                @RequestBody Account account, HttpServletRequest request){
         Jwt token = (Jwt) authentication.getPrincipal();
         UUID accountId = UUID.fromString(token.getSubject());
 
-        accountService.updateAccount(accountId, account);
+        accountService.updateAccount(accountId, account, accountId, request.getRemoteAddr());
     }
 }
