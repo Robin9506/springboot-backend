@@ -2,6 +2,9 @@ package com.robin.springbootbackend.auth;
 
 import com.nimbusds.jwt.JWT;
 import com.robin.springbootbackend.account.Account;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +23,7 @@ public class AuthController {
     }
 
     @PostMapping
-    public Token loginAccount(@RequestBody Credentials credentials) {
-        return authService.loginAccount(credentials);
+    public Token loginAccount(@RequestBody Credentials credentials, HttpServletRequest request) {
+        return authService.loginAccount(credentials, request.getRemoteAddr());
     }
 }

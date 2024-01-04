@@ -1,19 +1,18 @@
 package com.robin.springbootbackend.auth;
 
-import com.nimbusds.jose.shaded.gson.Gson;
 import com.robin.springbootbackend.account.Account;
 import com.robin.springbootbackend.account.AccountService;
-import com.robin.springbootbackend.enums.Role;
+import com.robin.springbootbackend.enums.LogType;
+import com.robin.springbootbackend.enums.Repo;
+import com.robin.springbootbackend.enums.RouteType;
 import com.robin.springbootbackend.helper.Hasher;
+import com.robin.springbootbackend.helper.Log;
+import com.robin.springbootbackend.helper.LogService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
@@ -25,13 +24,16 @@ public class AuthService {
 
     private final AccountService accountService;
 
+    private final LogService logService;
+
     private final Hasher hasher;
 
     @Autowired
-    public AuthService(AccountService accountService, JwtService jwtService, Hasher hasher){
+    public AuthService(AccountService accountService, JwtService jwtService, LogService logService, Hasher hasher){
 
         this.accountService = accountService;
         this.jwtService = jwtService;
+        this.logService = logService;
         this.hasher = hasher;
     }
 
@@ -50,7 +52,7 @@ public class AuthService {
 
     }
 
-    public Token loginAccount(Credentials credentials){
+    public Token loginAccount(Credentials credentials, String ip){
         Optional<Account> accountOptional = this.accountService.getAccountByEmail(credentials.getUsername());
         if(accountOptional.isPresent()){
             Account account = accountOptional.get();
@@ -61,7 +63,11 @@ public class AuthService {
                 return createToken(account);
                 
             }
-            else{ return null; }  
+            else{
+                Log log = new Log(ip, null, LogType.AUTH, RouteType.POST, Repo.AUTH, null, "user tried to login with username: " + credentials.getUsername());
+                this.logService.LogAction(log);
+                return null; 
+            }  
         }
         return null;
     }

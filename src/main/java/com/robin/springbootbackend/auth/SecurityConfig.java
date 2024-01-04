@@ -4,6 +4,9 @@ import com.nimbusds.jose.jwk.*;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import com.robin.springbootbackend.helper.LogRepository;
+import com.robin.springbootbackend.helper.LogService;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -37,9 +40,12 @@ public class SecurityConfig{
 
     private final UserRepository userRepository;
 
-    public SecurityConfig(RsaKeyProperties rsaKeys, UserRepository userRepository){
+    private final LogRepository logRepository;
+
+    public SecurityConfig(RsaKeyProperties rsaKeys, UserRepository userRepository, LogRepository logRepository){
         this.rsaKeys = rsaKeys;
         this.userRepository = userRepository;
+        this.logRepository = logRepository;
     }
 
     @Bean
@@ -84,5 +90,10 @@ public class SecurityConfig{
     public UserDetailsService userDetailsService(){
         return accountId -> (UserDetails) userRepository.findById(UUID.fromString(accountId))
                         .orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
-        }
+    }
+
+    @Bean
+    public LogService customLogService(){
+        return new LogService(this.logRepository);
+    }
 }
