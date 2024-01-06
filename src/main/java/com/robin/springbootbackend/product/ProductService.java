@@ -28,8 +28,17 @@ public class ProductService {
         this.fileHelper = fileHelper;
 
     }
-    public List<Optional<Product>> getProducts(){
-        return productRepository.findAllProducts();
+    public List<Product> getProducts(){
+        List<Product> productList = productRepository.findAllProducts();
+        if (productList.size() != 0){
+            for (Product product : productList){
+                String imageString = fileHelper.encodeFile(product.getImage());
+
+                product.setImage(imageString);
+            }
+        }
+
+        return productList;
     }
 
     public Product getProduct(UUID productId){

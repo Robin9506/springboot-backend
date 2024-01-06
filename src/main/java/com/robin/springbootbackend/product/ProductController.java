@@ -34,10 +34,9 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<Optional<Product>>  getProducts(){
+    public List<Product> getProducts(){
         return productService.getProducts();
     }
-
     @GetMapping(path = "{productId}")
     public Product getProduct(@PathVariable("productId") UUID productId){
         return productService.getProduct(productId);

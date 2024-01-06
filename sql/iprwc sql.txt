@@ -42,4 +42,15 @@ CREATE TABLE account(
 
 );
 
+CREATE TABLE log(
+    log_id UUID DEFAULT gen_random_uuid() NOT NULL,
+    ip VARCHAR(25),
+    account_id UUID,
+    log_type VARCHAR(25),
+    route_type VARCHAR(25),
+    repo VARCHAR(50),
+    time_of_action TIMESTAMP,
+    action_message VARCHAR(255)
+);
+
 INSERT INTO account(account_username, account_password, account_role) VALUES ('Robin', 555468, 'ADMIN', "test straat 55", "Delft", "Nederland");

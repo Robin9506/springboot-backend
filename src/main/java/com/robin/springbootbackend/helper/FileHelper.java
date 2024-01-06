@@ -85,5 +85,5 @@ public class FileHelper {
         }
 
         return fileName +".png";
-    }    
+    }
 }

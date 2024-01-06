@@ -37,6 +37,9 @@ public class Log {
     @Column(name = "action_message")
     private String actionMessage;
 
+    public Log() {
+    }
+
     public Log(String ip, UUID accountId, LogType logType, RouteType routeType, Repo repo, LocalDateTime time, String message){
         this.ip = ip;
         this.accountId = accountId;

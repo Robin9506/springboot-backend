@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 public class LogService {
 
     private final LogRepository logRepository;
-    private LocalDateTime localDateTime = LocalDateTime.now();
 
     @Autowired
     public LogService(LogRepository logRepository)
@@ -26,6 +25,8 @@ public class LogService {
         if(log.getAccountId() != null){
             accountId = log.getAccountId();
         }
+
+        LocalDateTime localDateTime = LocalDateTime.now();
         
         this.logRepository.PostLog(log.getIp(), accountId, log.getLogType(), log.getRouteType(), log.getRepo(), localDateTime, log.getActionMessage());
     }

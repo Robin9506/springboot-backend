@@ -97,12 +97,12 @@ public class Product {
         this.company = company;
     }
 
-    @JsonProperty(value = "image")
+    @JsonProperty(value = "imageLink")
     public String getImage() {
         return image;
     }
 
-    @JsonProperty(value = "_image")
+    @JsonProperty(value = "_imageLink")
     public void setImage(String image) {
         this.image = image;
     }
