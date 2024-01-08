@@ -1,5 +1,6 @@
 package com.robin.springbootbackend.order;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.robin.springbootbackend.product.Product;
 import jakarta.persistence.*;
@@ -32,17 +33,17 @@ public class Order {
         this.accountId = accountId;
     }
 
-    @JsonProperty("order_id")
+    @JsonProperty("id")
     public UUID getOrderId() {
         return orderId;
     }
 
-    @JsonProperty("_order_id")
+    @JsonProperty("id")
     public void setOrderId(UUID orderId) {
         this.orderId = orderId;
     }
 
-    @JsonProperty("account_id")
+    @JsonIgnore
     public UUID getAccountId() {
         return accountId;
     }

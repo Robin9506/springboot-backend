@@ -2,6 +2,7 @@ package com.robin.springbootbackend.order;
 
 import com.robin.springbootbackend.cart.Cart;
 import com.robin.springbootbackend.cart.CartService;
+import com.robin.springbootbackend.helper.FileHelper;
 import com.robin.springbootbackend.product.Product;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,13 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final CartService cartService;
 
+    private final FileHelper fileHelper;
+
     @Autowired
-    public OrderService(OrderRepository orderRepository, CartService cartService){
+    public OrderService(OrderRepository orderRepository, CartService cartService, FileHelper fileHelper){
         this.orderRepository = orderRepository;
         this.cartService = cartService;
+        this.fileHelper = fileHelper;
     }
 
     @Transactional
@@ -44,7 +48,11 @@ public class OrderService {
 
     }
 
-    public Optional<List<Order>> getAllOrders(){
+    public List<Order> getOwnOrders(UUID accountId) {
+        return orderRepository.getOwnOrders(accountId);
+    }
+
+    public List<Order> getAllOrders(){
         return orderRepository.getAllOrders();
     }
 }

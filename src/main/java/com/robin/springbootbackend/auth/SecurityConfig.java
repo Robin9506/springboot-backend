@@ -59,6 +59,7 @@ public class SecurityConfig{
                 .requestMatchers("/api/v1/product/{id}").permitAll()
                 .requestMatchers("/api/v1/account").permitAll()
                 .requestMatchers("/api/v1/promo").permitAll()
+                .requestMatchers("/api/v1/order").permitAll()
                 .requestMatchers((HttpMethod.POST),"/api/v1/auth").permitAll()
                 .requestMatchers("/api/v1/cart").permitAll()
                 .anyRequest().authenticated().and();

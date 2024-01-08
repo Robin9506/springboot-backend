@@ -31,8 +31,16 @@ public class OrderController {
     }
 
     @GetMapping
-    public Optional<List<Order>> getOrders(){
+    public List<Order> getOrders(){
         return orderService.getAllOrders();
+    }
+
+    @GetMapping(path = "/own")
+    public List<Order> getOwnOrders(Authentication authentication){
+        Jwt token = (Jwt) authentication.getPrincipal();
+        UUID accountId = UUID.fromString(token.getSubject());
+
+        return orderService.getOwnOrders(accountId);
     }
 
 
