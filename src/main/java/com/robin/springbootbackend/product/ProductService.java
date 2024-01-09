@@ -55,6 +55,12 @@ public class ProductService {
         return null;
     }
 
+    public Product getProductForCart(UUID productId){
+        Optional<Product> productOptional = productRepository.findProductById(productId);
+        return productOptional.orElse(null);
+
+    }
+
    public void addProduct(Product product, UUID accountId, String ip) {
        Optional<Product> productOptional = productRepository.findProductByName(product.getName());
        if (productOptional.isPresent()){
@@ -71,7 +77,17 @@ public class ProductService {
             return;
        }
 
-       String imageLink = fileHelper.convertBase64ToFile(bytes);
+       if(product.getName().isEmpty() &&
+               product.getPrice() > 0 &&
+               product.getCompany().isEmpty() &&
+               product.getRating() < 0 ||  product.getRating() > 5 &&
+               product.getPlatform().isEmpty()){
+           Log log = new Log(ip, accountId, LogType.DENIED, RouteType.POST, Repo.PRODUCT, null, "user tried to update product with empty required fields");
+           this.logService.LogAction(log);
+           return;
+       }
+
+       String imageLink = fileHelper.convertBase64ToFile(bytes, true);
 
        product.setImage(imageLink);
 
@@ -115,9 +131,19 @@ public class ProductService {
                     return;
             }
 
-            String imageLink = fileHelper.convertBase64ToFile(bytes);
+            String imageLink = fileHelper.convertBase64ToFile(bytes, true);
 
             currentProduct.setImage(imageLink);
+
+            if(currentProduct.getName().isEmpty() &&
+                currentProduct.getPrice() > 0 &&
+                currentProduct.getCompany().isEmpty() &&
+                currentProduct.getRating() < 0 ||  currentProduct.getRating() > 5 &&
+                currentProduct.getPlatform().isEmpty()){
+                Log log = new Log(ip, accountId, LogType.DENIED, RouteType.POST, Repo.PRODUCT, null, "user tried to update product with empty required fields");
+                this.logService.LogAction(log);
+                return;
+            }
 
             Log log = new Log(ip, accountId, LogType.COMPLETED, RouteType.PUT, Repo.PRODUCT, null, "user " + accountId +" updated product with id: " + productId);
             this.logService.LogAction(log);

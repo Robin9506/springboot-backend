@@ -1,5 +1,10 @@
 package com.robin.springbootbackend.cart;
 
+import com.robin.springbootbackend.enums.LogType;
+import com.robin.springbootbackend.enums.Repo;
+import com.robin.springbootbackend.enums.RouteType;
+import com.robin.springbootbackend.helper.FileHelper;
+import com.robin.springbootbackend.helper.Log;
 import com.robin.springbootbackend.product.Product;
 import com.robin.springbootbackend.product.ProductService;
 import jakarta.transaction.Transactional;
@@ -16,23 +21,34 @@ public class CartService {
     private final CartRepository cartRepository;
     private final ProductService productService;
 
+    private final FileHelper fileHelper;
+
     @Autowired
-    public CartService(CartRepository cartRepository, ProductService productService){
+    public CartService(CartRepository cartRepository, ProductService productService, FileHelper fileHelper){
         this.cartRepository = cartRepository;
         this.productService = productService;
+        this.fileHelper = fileHelper;
     }
 
     public Optional<Cart> getOwnCart(UUID accountId){
-        Optional<Cart> cart = cartRepository.findCartByAccountId(accountId);
-        if (cart.isEmpty()){
+        Optional<Cart> cartOptional = cartRepository.findCartByAccountId(accountId);
+        if (cartOptional.isEmpty()){
             System.out.println("cart is NULL");
             createCart(accountId);
         }
         else {
-            System.out.println("cart is owned");
+            Cart cart = cartOptional.get();
+            if (cart.getProducts() != null){
+                for (Product product : cart.getProducts()){
+                    String imageString = fileHelper.encodeFile(product.getImage());
+                    product.setImage(imageString);
+                }
+            }
+
+            return Optional.of(cart);
         }
 
-        return cart;
+        return Optional.empty();
     }
 
     public void createCart(UUID accountId){
@@ -66,8 +82,7 @@ public class CartService {
 
     @Transactional
     public void addItemToCart(UUID accountId, UUID productId){
-        System.out.println(productId);
-        Product product = productService.getProduct(productId);
+        Product product = productService.getProductForCart(productId);
 
         if(product == null) return;
 

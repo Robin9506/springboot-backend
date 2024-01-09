@@ -73,16 +73,18 @@ public class FileHelper {
         return false;
     }
 
-    public String convertBase64ToFile(byte[] file){
+    public String convertBase64ToFile(byte[] file, boolean isNew){
          SecureRandom random = new SecureRandom();
          String fileName = new BigInteger(130, random).toString(32);
+         if(isNew){
+             try (OutputStream stream = new FileOutputStream(storePath + "/" + fileName +".png")) {
+                 stream.write(file);
+             }
+             catch (Exception e) {
+                 return "";
+             }
+         }
 
-        try (OutputStream stream = new FileOutputStream(storePath + "/" + fileName +".png")) {
-            stream.write(file);
-        }
-        catch (Exception e) {
-            return "";
-        }
 
         return fileName +".png";
     }
