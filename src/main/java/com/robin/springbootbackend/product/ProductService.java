@@ -41,6 +41,32 @@ public class ProductService {
         return productList;
     }
 
+    public List<Product> getOrderedProductsByName(){
+        List<Product> productList = productRepository.findAllOrderedProductsByName();
+        if (productList.size() != 0){
+            for (Product product : productList){
+                String imageString = fileHelper.encodeFile(product.getImage());
+
+                product.setImage(imageString);
+            }
+        }
+
+        return productList;
+    }
+
+    public List<Product> getOrderedProductsByPrice(){
+        List<Product> productList = productRepository.findAllOrderedProductsByPrice();
+        if (productList.size() != 0){
+            for (Product product : productList){
+                String imageString = fileHelper.encodeFile(product.getImage());
+
+                product.setImage(imageString);
+            }
+        }
+
+        return productList;
+    }
+
     public Product getProduct(UUID productId){
         Optional<Product> productOptional = productRepository.findProductById(productId);
         if (productOptional.isPresent()) {

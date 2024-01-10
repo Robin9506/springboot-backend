@@ -37,6 +37,17 @@ public class ProductController {
     public List<Product> getProducts(){
         return productService.getProducts();
     }
+
+    @GetMapping(path = "/ordered")
+    public List<Product> getOrderedProducts(){
+        return productService.getOrderedProductsByName();
+    }
+
+    @GetMapping(path = "/ordered/price")
+    public List<Product> getOrderedProductsByPrice(){
+        return productService.getOrderedProductsByPrice();
+    }
+
     @GetMapping(path = "{productId}")
     public Product getProduct(@PathVariable("productId") UUID productId){
         return productService.getProduct(productId);

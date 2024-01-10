@@ -50,13 +50,15 @@ public class SecurityConfig{
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        http = http.cors().and().csrf().disable();
+        http = http.csrf().disable();
         http = http
+                .cors().and()
                 .addFilterBefore(new JwtAuthorizationFilter(new JwtService(this.jwtEncoder(), this.jwtDecoder()), userDetailsService()), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests()
 
                 .requestMatchers("/api/v1/product").permitAll()
                 .requestMatchers("/api/v1/product/{id}").permitAll()
+                .requestMatchers("/api/v1/product/ordered/{all}").permitAll()
                 .requestMatchers("/api/v1/account").permitAll()
                 .requestMatchers("/api/v1/promo").permitAll()
                 .requestMatchers("/api/v1/order").permitAll()
