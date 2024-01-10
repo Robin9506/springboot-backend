@@ -106,9 +106,10 @@ public class ProductService {
        if(product.getName().isEmpty() ||
                product.getPrice() < 1 ||
                product.getCompany().isEmpty() ||
+               product.getDescription().length() > 255 ||
                product.getRating() < 0 ||  product.getRating() > 5 ||
                product.getPlatform().isEmpty()){
-           Log log = new Log(ip, accountId, LogType.DENIED, RouteType.POST, Repo.PRODUCT, null, "user tried to add product with empty required fields");
+           Log log = new Log(ip, accountId, LogType.DENIED, RouteType.POST, Repo.PRODUCT, null, "user tried to add product with empty or faulty required fields");
            this.logService.LogAction(log);
            return;
        }
@@ -164,9 +165,10 @@ public class ProductService {
             if(currentProduct.getName().isEmpty() ||
                 currentProduct.getPrice() > 0 ||
                 currentProduct.getCompany().isEmpty() ||
+                currentProduct.getDescription().length() > 255 ||
                 currentProduct.getRating() < 0 ||  currentProduct.getRating() > 5 ||
                 currentProduct.getPlatform().isEmpty()){
-                Log log = new Log(ip, accountId, LogType.DENIED, RouteType.POST, Repo.PRODUCT, null, "user tried to update product with empty required fields");
+                Log log = new Log(ip, accountId, LogType.DENIED, RouteType.POST, Repo.PRODUCT, null, "user tried to update product with empty or faulty required fields");
                 this.logService.LogAction(log);
                 return;
             }
