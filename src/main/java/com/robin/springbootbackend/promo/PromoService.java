@@ -32,16 +32,20 @@ public class PromoService {
         return promoRepository.getPromoById(promoId);
     }
 
-    public void postPromo(Promo promo, UUID accountId, String ip){
+    public Promo postPromo(Promo promo, UUID accountId, String ip){
         Optional<Promo> promoOptional = promoRepository.getPromoByCode(promo.getPromoCode());
-        if (!promoOptional.isEmpty()) {
+        if (promoOptional.isPresent()) {
             Log log = new Log(ip, accountId, LogType.COMPLETED, RouteType.POST, Repo.PROMO, null, "user tried to create promo with code: " + promo.getPromoCode());
             this.logService.LogAction(log);
+
+            return null;
         }
         Log log = new Log(ip, accountId, LogType.COMPLETED, RouteType.POST, Repo.PROMO, null, "user created new promo with code: " + promo.getPromoCode());
         this.logService.LogAction(log);
 
         promoRepository.insertPromo(promo.getPromoCode(), promo.getPromoDiscount());
+
+        return promo;
     }
 
     public void updatePromo(UUID promoId, Promo promo, UUID accountId, String ip) {

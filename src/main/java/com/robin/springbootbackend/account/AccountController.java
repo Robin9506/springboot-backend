@@ -34,6 +34,7 @@ public class AccountController {
     }
 
     @GetMapping(path = "{accountId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Optional<Account> getAccount(@PathVariable("accountId") UUID accountId){
         return accountService.getAccount(accountId);
     }
@@ -53,6 +54,14 @@ public class AccountController {
         UUID userId = UUID.fromString(token.getSubject());
         
         accountService.deleteAccount(accountId, userId, request.getRemoteAddr());
+    }
+
+    @DeleteMapping(path = "/own")
+    public void deleteOwnAccount(Authentication authentication, HttpServletRequest request){
+        Jwt token = (Jwt) authentication.getPrincipal();
+        UUID userId = UUID.fromString(token.getSubject());
+
+        accountService.deleteAccount(userId, userId, request.getRemoteAddr());
     }
 
     @PutMapping(path = "{accountId}")

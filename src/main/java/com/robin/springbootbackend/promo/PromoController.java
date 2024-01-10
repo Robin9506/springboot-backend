@@ -45,11 +45,11 @@ public class PromoController {
 
     @PostMapping("/new")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public void postPromo(@RequestBody Promo promo, Authentication authentication, HttpServletRequest request){
+    public Promo postPromo(@RequestBody Promo promo, Authentication authentication, HttpServletRequest request){
         Jwt token = (Jwt) authentication.getPrincipal();
         UUID accountId = UUID.fromString(token.getSubject());
 
-        promoService.postPromo(promo, accountId, request.getRemoteAddr());
+        return promoService.postPromo(promo, accountId, request.getRemoteAddr());
     }
 
     @PutMapping(path = "{promoId}")

@@ -107,7 +107,7 @@ public class AccountService {
 
         PasswordChecker checker = new PasswordChecker();
         if(!checker.isValid(account.getPassword())){
-//            return;
+            return null;
         } 
         
         String hash = hasher.hashPassword(account.getPassword());
