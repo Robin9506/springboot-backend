@@ -85,6 +85,13 @@ public class AccountService {
             currentAccount.setCity(account.getCity());
             currentAccount.setCountry(account.getCountry());
 
+            if(currentAccount.getUsername().isEmpty() ||
+                currentAccount.getPassword().isEmpty() ||
+                    currentAccount.getAddress().isEmpty() ||
+                    currentAccount.getCity().isEmpty() ||
+                    currentAccount.getCountry().isEmpty()
+            ){ return null;}
+
             Log log = new Log(ip, userId, LogType.COMPLETED, RouteType.PUT, Repo.ACCOUNT, null, "user " + userId +" updated account with id: " + accountId);
             this.logService.LogAction(log);
 
@@ -104,6 +111,13 @@ public class AccountService {
         if (accountExists.isPresent()){
             return null;
         }
+
+        if(account.getUsername().isEmpty() ||
+                account.getPassword().isEmpty() ||
+                account.getAddress().isEmpty() ||
+                account.getCity().isEmpty() ||
+                account.getCountry().isEmpty()
+        ){ return null;}
 
         PasswordChecker checker = new PasswordChecker();
         if(!checker.isValid(account.getPassword())){
