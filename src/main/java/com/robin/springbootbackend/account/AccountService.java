@@ -99,10 +99,10 @@ public class AccountService {
 
     }
 
-    public void postAccount(Account account, String ip) {
+    public Account postAccount(Account account, String ip) {
         Optional<Account> accountExists = accountRepository.findByEmail(account.getUsername());
         if (accountExists.isPresent()){
-            throw new IllegalStateException("Account not created");
+            return null;
         }
 
         PasswordChecker checker = new PasswordChecker();
@@ -118,5 +118,7 @@ public class AccountService {
         this.logService.LogAction(log);
         
         accountRepository.insertAccount(account.getUsername(), account.getPassword(), account.getRole().toString(), account.getAddress(), account.getCity(), account.getCountry());
+
+        return account;
     }
 }

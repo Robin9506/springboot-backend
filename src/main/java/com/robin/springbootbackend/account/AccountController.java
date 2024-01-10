@@ -24,8 +24,8 @@ public class AccountController {
     }
 
     @PostMapping
-    public void postAccount(@RequestBody Account account, HttpServletRequest request) {
-        accountService.postAccount(account, request.getRemoteAddr());
+    public Account postAccount(@RequestBody Account account, HttpServletRequest request) {
+        return accountService.postAccount(account, request.getRemoteAddr());
     }
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
