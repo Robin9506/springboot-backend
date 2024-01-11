@@ -3,7 +3,6 @@ INSERT INTO product(product_name, price, description, company, image_link, ratin
 
 
 SELECT * FROM product;
-
 DROP TABLE product;
 
 CREATE TABLE product(
@@ -15,7 +14,6 @@ CREATE TABLE product(
 	image_link VARCHAR(255) NOT NULL,
 	rating INT NOT NULL,
 	platform VARCHAR(255) NOT NULL
-	
 );
 
 INSERT INTO promo(promo_code, promo_discount, promo_end_time) VALUES ('2023', 10);
