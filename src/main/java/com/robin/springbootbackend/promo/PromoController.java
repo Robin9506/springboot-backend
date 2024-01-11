@@ -18,7 +18,8 @@ import java.util.UUID;
 @RestController
 @CrossOrigin(origins = {"http://localhost:4200",
         "http://triplergames.com",
-        "https://triplergames.com"}, maxAge = 3600)
+        "https://triplergames.com",
+        "https://www.triplergames.com"}, maxAge = 3600)
 @RequestMapping(path = "api/v1/promo")
 public class PromoController {
     private final PromoService promoService;
