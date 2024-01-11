@@ -30,7 +30,7 @@ public class OrderService {
 
     @Transactional
     public void postNewOrder(UUID accountId){
-        Optional<Cart> cartOptional = cartService.getOwnCart(accountId);
+        Optional<Cart> cartOptional = cartService.getOwnCart(accountId, true);
         if (cartOptional.isPresent()){
             Cart cart = cartOptional.get();
 

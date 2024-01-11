@@ -33,7 +33,7 @@ public class CartController {
         Jwt token = (Jwt) authentication.getPrincipal();
         UUID accountId = UUID.fromString(token.getSubject());
 
-        return cartService.getOwnCart(accountId);
+        return cartService.getOwnCart(accountId, false);
     }
 
     @DeleteMapping(path = "/own/{productId}")

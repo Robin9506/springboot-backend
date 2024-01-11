@@ -30,7 +30,7 @@ public class CartService {
         this.fileHelper = fileHelper;
     }
 
-    public Optional<Cart> getOwnCart(UUID accountId){
+    public Optional<Cart> getOwnCart(UUID accountId, boolean updating){
         Optional<Cart> cartOptional = cartRepository.findCartByAccountId(accountId);
         if (cartOptional.isEmpty()){
             System.out.println("cart is NULL");
@@ -38,13 +38,14 @@ public class CartService {
         }
         else {
             Cart cart = cartOptional.get();
-            if (cart.getProducts() != null){
-                for (Product product : cart.getProducts()){
-                    String imageString = fileHelper.encodeFile(product.getImage());
-                    product.setImage(imageString);
+            if(!updating){
+                if (cart.getProducts() != null){
+                    for (Product product : cart.getProducts()){
+                        String imageString = fileHelper.encodeFile(product.getImage());
+                        product.setImage(imageString);
+                    }
                 }
             }
-
             return Optional.of(cart);
         }
 
@@ -67,11 +68,10 @@ public class CartService {
     @Transactional
     public void removeItemFromCart(UUID accountId, UUID productId){
         System.out.println(productId);
-        Product product = productService.getProduct(productId);
+        Product product = productService.getProductForCart(productId);
 
         if(product == null) return;
-
-        Optional<Cart> cartOptional = getOwnCart(accountId);
+        Optional<Cart> cartOptional = getOwnCart(accountId, true);
         if (cartOptional.isPresent()){
             Cart cart = cartOptional.get();
             System.out.println(product.getName());
@@ -86,10 +86,10 @@ public class CartService {
 
         if(product == null) return;
 
-        Optional<Cart> cartOptional = getOwnCart(accountId);
+        Optional<Cart> cartOptional = getOwnCart(accountId, true);
         if (cartOptional.isPresent()){
             Cart cart = cartOptional.get();
-            System.out.println(product.getName());
+            System.out.println(product.getImage());
             cart.getProducts().add(product);
         }      
     }

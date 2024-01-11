@@ -20,7 +20,7 @@ public class Order {
     @Column(name = "account_id")
     private UUID accountId;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @JoinTable(name = "order_product",
             joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id")
