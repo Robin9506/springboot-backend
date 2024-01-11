@@ -29,7 +29,7 @@ public class OrderService {
     }
 
     @Transactional
-    public void postNewOrder(UUID accountId){
+    public Order postNewOrder(UUID accountId){
         Optional<Cart> cartOptional = cartService.getOwnCart(accountId, true);
         if (cartOptional.isPresent()){
             Cart cart = cartOptional.get();
@@ -40,12 +40,12 @@ public class OrderService {
 
                 this.orderRepository.save(order);
                 this.cartService.removeCart(accountId);
+
+                return order;
             }
 
         }
-        else return;
-
-
+        return null;
     }
 
     public List<Order> getOwnOrders(UUID accountId) {

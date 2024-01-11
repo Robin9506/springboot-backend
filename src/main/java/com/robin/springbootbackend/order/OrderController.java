@@ -23,11 +23,11 @@ public class OrderController {
     }
 
     @PostMapping
-    public void postOrder(Authentication authentication){
+    public Order postOrder(Authentication authentication){
         Jwt token = (Jwt) authentication.getPrincipal();
         UUID accountId = UUID.fromString(token.getSubject());
 
-        orderService.postNewOrder(accountId);
+        return orderService.postNewOrder(accountId);
     }
 
     @GetMapping
