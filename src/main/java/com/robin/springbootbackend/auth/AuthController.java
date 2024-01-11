@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:4200", "http://triplergames.com"}, maxAge = 3600)
+@CrossOrigin(origins = {"http://localhost:4200",
+        "http://triplergames.com",
+        "https://triplergames.com"}, maxAge = 3600)
 @RequestMapping(path = "api/v1/auth")
 public class AuthController {
 

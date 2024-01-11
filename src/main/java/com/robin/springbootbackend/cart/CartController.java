@@ -10,7 +10,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:4200", "http://triplergames.com"}, maxAge = 3600)
+@CrossOrigin(origins = {"http://localhost:4200",
+        "https://triplergames.com",
+        "https://triplergames.com"}, maxAge = 3600)
 @RequestMapping(path = "api/v1/cart")
 public class CartController {
     private final CartService cartService;
