@@ -31,6 +31,7 @@ public class CartService {
     }
 
     public Optional<Cart> getOwnCart(UUID accountId, boolean updating){
+        UUID previousId = null;
         Optional<Cart> cartOptional = cartRepository.findCartByAccountId(accountId);
         if (cartOptional.isEmpty()){
             System.out.println("cart is NULL");
@@ -41,8 +42,11 @@ public class CartService {
             if(!updating){
                 if (cart.getProducts() != null){
                     for (Product product : cart.getProducts()){
-                        String imageString = fileHelper.encodeFile(product.getImage());
-                        product.setImage(imageString);
+                        if(previousId != product.getId()){
+                            String imageString = fileHelper.encodeFile(product.getImage());
+                            product.setImage(imageString);
+                        }
+                        previousId = product.getId();
                     }
                 }
             }
